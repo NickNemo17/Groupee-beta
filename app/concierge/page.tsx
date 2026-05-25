@@ -9,7 +9,7 @@ import {
   SUGGESTED_PROMPTS,
   type ConciergeResult,
 } from "@/lib/concierge";
-import { type Experience } from "@/lib/data";
+import { getExperience, type Experience } from "@/lib/data";
 import SmartImg from "@/components/SmartImg";
 
 interface Msg {
@@ -33,16 +33,42 @@ export default function ConciergePage() {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [msgs, typing]);
 
-  const send = (text: string) => {
+  const send = async (text: string) => {
     if (!text.trim()) return;
     setMsgs((m) => [...m, { role: "user", text }]);
     setInput("");
     setTyping(true);
-    setTimeout(() => {
-      const result = getConciergeReply(text);
-      setMsgs((m) => [...m, { role: "ai", result }]);
-      setTyping(false);
-    }, 650);
+
+    let result: ConciergeResult;
+    try {
+      // Live Claude concierge (falls back to the local engine server-side if
+      // no ANTHROPIC_API_KEY); this fetch also falls back on any error.
+      const res = await fetch("/api/concierge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: text, when: dayPart() }),
+      });
+      if (!res.ok) throw new Error("bad status");
+      const data = (await res.json()) as {
+        intro: string;
+        picks: { id: string; reason: string }[];
+      };
+      const experiences = data.picks
+        .map((p) => {
+          const exp = getExperience(p.id);
+          return exp ? { exp, reason: p.reason } : null;
+        })
+        .filter((x): x is { exp: Experience; reason: string } => x !== null);
+      result =
+        experiences.length > 0
+          ? { intro: data.intro, experiences }
+          : getConciergeReply(text);
+    } catch {
+      result = getConciergeReply(text);
+    }
+
+    setMsgs((m) => [...m, { role: "ai", result }]);
+    setTyping(false);
   };
 
   return (

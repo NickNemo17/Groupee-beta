@@ -37,7 +37,7 @@ export default function MiniMap({ lat, lng }: { lat: number; lng: number; label?
     map.on("load", () => {
       const el = document.createElement("div");
       el.style.cssText =
-        "width:28px;height:28px;border-radius:999px;background:#ff5a5f;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4);display:grid;place-items:center;color:#fff;font-size:13px";
+        "width:28px;height:28px;border-radius:999px;background:#53a318;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4);display:grid;place-items:center;color:#fff;font-size:13px";
       el.textContent = "📍";
       new maplibregl.Marker({ element: el }).setLngLat([lng, lat]).addTo(map);
     });

@@ -2,10 +2,10 @@
 @import "maplibre-gl/dist/maplibre-gl.css";
 
 @theme {
-  /* Groupee palette — one accent used sparingly, otherwise ink-on-white */
-  --color-accent: #ff5a5f;
-  --color-accent-dark: #e04347;
-  --color-accent-soft: #fff0f0;
+  /* Groupee palette — Groupon green, refreshed. One accent used sparingly. */
+  --color-accent: #53a318;
+  --color-accent-dark: #437f14;
+  --color-accent-soft: #eef6e4;
   --color-ink: #1a1a1a;
   --color-ink-2: #4a4a4a;
   --color-muted: #717171;
