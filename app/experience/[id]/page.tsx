@@ -16,7 +16,11 @@ import RefundBadge from "@/components/RefundBadge";
 
 const MiniMap = dynamic(() => import("@/components/MiniMap"), {
   ssr: false,
-  loading: () => <div className="h-full w-full bg-[#e8eae6]" />,
+  loading: () => (
+    <div className="grid h-full w-full place-items-center bg-[#e8eae6] text-[12px] text-muted">
+      <span className="animate-pop-in">📍 loading map…</span>
+    </div>
+  ),
 });
 
 export default function ExperienceDetail() {
@@ -73,6 +77,13 @@ export default function ExperienceDetail() {
             <p className="mt-1 text-[14px] text-muted">
               {exp.category} · {exp.neighborhood} · {Math.round(exp.durationMin / 60 * 10) / 10}h
             </p>
+            {exp.newOnGroupee && (
+              <p className="mt-2 rounded-lg bg-accent-soft px-3 py-2 text-[12px] text-accent-deep">
+                ✦ <span className="font-semibold">Why you&apos;re seeing this:</span> our partnership team
+                sourced {exp.host.name} to fill a quiet window — on fair terms that keep their margins
+                whole, so the experience stays great.
+              </p>
+            )}
           </div>
 
           {/* rating hero */}
@@ -97,7 +108,7 @@ export default function ExperienceDetail() {
               <p className="text-[15px] font-semibold text-ink">
                 Hosted by {exp.host.name}
                 {exp.host.superhost && (
-                  <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-dark">
+                  <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-deep">
                     Superhost
                   </span>
                 )}
@@ -172,9 +183,9 @@ export default function ExperienceDetail() {
           </button>
           <button
             onClick={() => setSheet("book")}
-            className="rounded-btn bg-accent px-6 py-3 text-[15px] font-semibold text-white"
+            className="rounded-btn bg-accent px-5 py-3 text-[15px] font-semibold text-white"
           >
-            Reserve
+            Reserve · ${exp.price}
           </button>
         </div>
       </div>

@@ -8,7 +8,7 @@ import { archetypeFor } from "@/lib/archetypes";
 import { useMerchant } from "@/lib/merchantStore";
 
 const VERDICT_PILL: Record<Verdict, string> = {
-  "Ship to feed": "bg-accent-soft text-accent-dark",
+  "Ship to feed": "bg-accent-soft text-accent-deep",
   "Tune the offer": "bg-amber-50 text-amber-700",
   Hold: "bg-rose-50 text-rose-700",
 };

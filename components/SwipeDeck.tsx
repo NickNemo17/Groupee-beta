@@ -131,7 +131,7 @@ function Card({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`relative h-full w-full overflow-hidden rounded-3xl bg-hairline shadow-pop ${className}`}>
+    <div className={`relative h-full w-full overflow-hidden rounded-card bg-hairline shadow-pop ${className}`}>
       <SmartImg src={exp.images[0]} seed={`${exp.id}-deck`} alt={exp.title} className="h-full w-full object-cover" />
       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-4 pt-12 text-white">
         <p className="text-[12px] font-medium opacity-90">

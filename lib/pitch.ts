@@ -69,6 +69,8 @@ export function computeEconomics(p: Prospect): Economics {
 
   if (arc.mechanic === "B") {
     // Access / value-add: full price stays, a small comp is the lever.
+    // 12% ≈ a perceived comp value (e.g. a bottle); merchant's real COGS is lower,
+    // so this is conservative. Modeled estimate — validate per-vertical in a pilot.
     const compCost = round(regularPrice * 0.12);
     const keepFull = round(regularPrice * (1 - arc.commissionPct / 100) - compCost);
     base.dealPrice = regularPrice;
@@ -79,6 +81,8 @@ export function computeEconomics(p: Prospect): Economics {
   } else if (arc.mechanic === "C") {
     // Intro → regular: the deal is a loss-leader; LTV is the real number.
     const introPrice = round(regularPrice * (1 - arc.discountPct / 100));
+    // Modeled estimate. 40% intro→repeat is at the optimistic end of published
+    // boutique-fitness/beauty intro-offer benchmarks (~15–40%) — validate in pilot.
     const visitsPerYear = arc.key === "beauty" ? 9 : 14;
     const rebookRate = 0.4;
     const ltv = r0(regularPrice * visitsPerYear * rebookRate);

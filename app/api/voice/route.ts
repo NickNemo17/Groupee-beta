@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { cappedString } from "@/lib/validate";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Renders the agent's spoken pitch as audio via ElevenLabs TTS so you can HEAR
 // the call in-browser. No Twilio / real dialing — that needs consent + DNC and
@@ -14,14 +16,18 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
+  if (!rateLimit(req, "voice", 12)) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
   const key = process.env.ELEVENLABS_API_KEY;
   if (!key) {
     return NextResponse.json({ available: false }, { status: 200 });
   }
 
-  const { text } = await req.json().catch(() => ({ text: "" }));
-  if (!text || typeof text !== "string") {
-    return NextResponse.json({ error: "missing text" }, { status: 400 });
+  const body = await req.json().catch(() => ({}));
+  const text = cappedString(body.text, 1200);
+  if (!text) {
+    return NextResponse.json({ error: "missing or oversized text" }, { status: 400 });
   }
 
   try {
@@ -31,7 +37,7 @@ export async function POST(req: Request) {
         method: "POST",
         headers: { "xi-api-key": key, "Content-Type": "application/json" },
         body: JSON.stringify({
-          text: text.slice(0, 2500),
+          text,
           model_id: "eleven_turbo_v2_5",
           voice_settings: { stability: 0.4, similarity_boost: 0.8 },
         }),

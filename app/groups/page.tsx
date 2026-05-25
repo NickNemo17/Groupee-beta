@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useGroupee } from "@/lib/store";
 import { EXPERIENCES, getExperience } from "@/lib/data";
 import SmartImg from "@/components/SmartImg";
+import EmptyState from "@/components/EmptyState";
 
 export default function GroupsPage() {
   const { groups, createGroup } = useGroupee();
@@ -40,11 +41,11 @@ export default function GroupsPage() {
         </button>
 
         {groups.length === 0 ? (
-          <div className="mt-12 text-center text-muted">
-            <p className="text-4xl">👯</p>
-            <p className="mt-2 text-[14px]">No groups yet.</p>
-            <p className="text-[13px]">Start one above, or hit “+ Group” on any experience.</p>
-          </div>
+          <EmptyState
+            icon="👯"
+            title="No groups yet"
+            subtitle="Start one above, or hit “+ Group” on any experience."
+          />
         ) : (
           <div className="mt-5 space-y-3">
             {groups
@@ -71,7 +72,7 @@ export default function GroupsPage() {
                         <span
                           className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                             phase === "Planned"
-                              ? "bg-accent-soft text-accent-dark"
+                              ? "bg-accent-soft text-accent-deep"
                               : phase === "Decided"
                                 ? "bg-amber-50 text-amber-700"
                                 : "bg-canvas text-ink-2"

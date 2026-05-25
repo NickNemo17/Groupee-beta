@@ -8,7 +8,7 @@ export const metadata = { title: "Groupee Partner Studio — Supply graph" };
 const MECH_STYLE: Record<string, string> = {
   A: "bg-blue-50 text-blue-700",
   B: "bg-violet-50 text-violet-700",
-  C: "bg-accent-soft text-accent-dark",
+  C: "bg-accent-soft text-accent-deep",
 };
 
 export default function SupplyGraphPage() {

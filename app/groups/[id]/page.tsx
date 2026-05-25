@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { useGroupee } from "@/lib/store";
-import { getExperience } from "@/lib/data";
+import { getExperience, type Experience } from "@/lib/data";
 import { nextDays, slotsFor, prettyDate } from "@/lib/slots";
 import SwipeDeck from "@/components/SwipeDeck";
 import SplitPanel from "@/components/SplitPanel";
@@ -32,7 +32,9 @@ export default function GroupDetail() {
     );
   }
 
-  const candidates = group.candidateIds.map((c) => getExperience(c)!).filter(Boolean);
+  const candidates = group.candidateIds
+    .map((c) => getExperience(c))
+    .filter((e): e is Experience => Boolean(e));
   const decided = group.decidedId ? getExperience(group.decidedId) : null;
   const slots = decided ? slotsFor(decided.bestTime) : [];
   const time = slots[0] ?? "7:00 PM";
@@ -99,7 +101,7 @@ export default function GroupDetail() {
                 <SmartImg src={decided.images[0]} seed={`${decided.id}-plan`} alt={decided.title} className="h-full w-full object-cover" />
               </div>
               <div>
-                <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-dark">
+                <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-deep">
                   ✓ Plan locked in
                 </span>
                 <p className="mt-1 text-[15px] font-bold leading-tight text-ink">{decided.title}</p>

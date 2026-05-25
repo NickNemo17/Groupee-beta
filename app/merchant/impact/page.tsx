@@ -92,6 +92,11 @@ export default function ImpactPage() {
           <p className="mt-3 text-[11px] text-muted">A = off-peak fill · B = access · C = intro→regular.</p>
         </div>
       </div>
+
+      <p className="mt-5 text-[11px] italic text-muted">
+        Profit figures are modeled from per-merchant economics (margin, off-peak capacity, redemption
+        caps) — directional estimates to validate per partner in pilot, not booked revenue.
+      </p>
     </div>
   );
 }

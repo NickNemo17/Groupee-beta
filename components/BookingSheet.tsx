@@ -47,7 +47,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
             <p className="text-[13px] font-semibold text-ink">Need help?</p>
             <p className="text-[12px] text-muted">A real person replies in ~2 min</p>
           </div>
-          <button className="rounded-full bg-accent-soft px-3 py-1.5 text-[13px] font-semibold text-accent-dark">
+          <button className="rounded-full bg-accent-soft px-3 py-1.5 text-[13px] font-semibold text-accent-deep">
             Chat
           </button>
         </div>
@@ -127,7 +127,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
             key={p.id}
             onClick={() => setPay(p.id)}
             className={`flex-1 rounded-xl border px-2 py-2.5 text-[12px] font-medium ${
-              pay === p.id ? "border-accent bg-accent-soft text-accent-dark" : "border-hairline text-ink-2"
+              pay === p.id ? "border-accent bg-accent-soft text-accent-deep" : "border-hairline text-ink-2"
             }`}
           >
             {p.glyph} {p.label}

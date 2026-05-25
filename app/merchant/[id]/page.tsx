@@ -121,7 +121,7 @@ export default function ProspectWorkspace() {
             ) : (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-dark">
+                  <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-deep">
                     {pitch.source === "claude" ? "Claude-generated" : "Template (add ANTHROPIC_API_KEY for live)"}
                   </span>
                   <button onClick={generate} className="text-[12px] text-muted hover:text-ink-2">regenerate</button>
@@ -146,7 +146,8 @@ export default function ProspectWorkspace() {
                     onClick={() => {
                       window.open(
                         gmailComposeUrl(prospect.contact.email, pitch.emailSubject, pitch.emailBody),
-                        "_blank"
+                        "_blank",
+                        "noopener,noreferrer"
                       );
                       approveEmail(id);
                       if (stage === "Discovered" || stage === "Qualified") setStage(id, "Proposal sent");
@@ -162,7 +163,8 @@ export default function ProspectWorkspace() {
                       onClick={() =>
                         window.open(
                           gmailComposeUrl(prospect.contact.email, pitch.emailSubject, pitch.emailBody),
-                          "_blank"
+                          "_blank",
+                          "noopener,noreferrer"
                         )
                       }
                       className="text-[12px] text-muted hover:text-ink-2"
@@ -210,7 +212,8 @@ export default function ProspectWorkspace() {
                             start: slot.start,
                             end: slot.end,
                           }),
-                          "_blank"
+                          "_blank",
+                          "noopener,noreferrer"
                         );
                       }}
                       className="rounded-full border border-hairline px-3 py-1 text-[12px] font-semibold text-ink-2 hover:border-accent"

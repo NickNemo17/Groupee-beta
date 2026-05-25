@@ -2,7 +2,7 @@ import { type ValueTier } from "@/lib/value";
 
 const STYLE: Record<ValueTier, string> = {
   "Great value": "bg-accent text-white",
-  "Good value": "bg-accent-soft text-accent-dark",
+  "Good value": "bg-accent-soft text-accent-deep",
   "Fair value": "bg-white/95 text-ink",
 };
 

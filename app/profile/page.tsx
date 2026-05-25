@@ -148,7 +148,7 @@ export default function ProfilePage() {
                 key={f}
                 onClick={() => setFreq(f)}
                 className={`flex-1 rounded-xl border py-2.5 text-[13px] font-medium capitalize ${
-                  freq === f ? "border-accent bg-accent-soft text-accent-dark" : "border-hairline text-ink-2"
+                  freq === f ? "border-accent bg-accent-soft text-accent-deep" : "border-hairline text-ink-2"
                 }`}
               >
                 {f === "off" ? "Off" : f}
@@ -186,7 +186,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
     <button
       onClick={onClick}
       className={`rounded-full border px-3.5 py-2 text-[13px] font-medium transition ${
-        active ? "border-accent bg-accent-soft text-accent-dark" : "border-hairline text-ink-2"
+        active ? "border-accent bg-accent-soft text-accent-deep" : "border-hairline text-ink-2"
       }`}
     >
       {children}

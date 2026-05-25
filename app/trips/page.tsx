@@ -5,6 +5,7 @@ import { useGroupee } from "@/lib/store";
 import { getExperience } from "@/lib/data";
 import { prettyDate } from "@/lib/slots";
 import SmartImg from "@/components/SmartImg";
+import EmptyState from "@/components/EmptyState";
 
 export default function TripsPage() {
   const { trips } = useGroupee();
@@ -19,14 +20,12 @@ export default function TripsPage() {
 
       <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4">
         {sorted.length === 0 ? (
-          <div className="mt-16 text-center text-muted">
-            <p className="text-4xl">🗓️</p>
-            <p className="mt-2 text-[15px] font-semibold text-ink">No plans yet</p>
-            <p className="text-[13px]">Book an experience or commit a group plan and it shows up here.</p>
-            <Link href="/" className="mt-4 inline-block rounded-btn bg-accent px-5 py-2.5 text-[14px] font-semibold text-white">
-              Explore experiences
-            </Link>
-          </div>
+          <EmptyState
+            icon="🗓️"
+            title="No plans yet"
+            subtitle="Book an experience or commit a group plan and it shows up here."
+            cta={{ href: "/", label: "Explore experiences" }}
+          />
         ) : (
           <div className="space-y-4">
             {sorted.map((t) => {

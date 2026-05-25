@@ -13,9 +13,9 @@ export default function PipelineBoard() {
         const items = PROSPECTS.filter((p) => stageOf(p.id) === stage);
         return (
           <div key={stage} className="flex w-72 shrink-0 flex-col">
-            <div className="mb-2 flex items-center justify-between px-1">
+            <div className="mb-2 flex items-center justify-between rounded-lg bg-white px-3 py-1.5 shadow-card">
               <h3 className="text-[13px] font-bold text-ink">{stage}</h3>
-              <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-muted">
+              <span className="rounded-full bg-canvas px-2 py-0.5 text-[11px] font-semibold text-muted">
                 {items.length}
               </span>
             </div>

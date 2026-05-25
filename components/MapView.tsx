@@ -52,7 +52,7 @@ export default function MapView({ items }: { items: Experience[] }) {
   const select = (id: string, fly = true) => {
     setActiveId(id);
     Object.entries(markersRef.current).forEach(([mid, { el }]) => pinStyle(el, mid === id));
-    const card = railRef.current?.querySelector<HTMLElement>(`[data-card="${id}"]`);
+    const card = railRef.current?.querySelector<HTMLElement>(`[data-card="${CSS.escape(id)}"]`);
     card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
     const exp = items.find((e) => e.id === id);
     if (fly && exp && mapRef.current) {

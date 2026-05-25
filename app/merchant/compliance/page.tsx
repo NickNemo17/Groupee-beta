@@ -50,7 +50,7 @@ export default function CompliancePage() {
               <h3 className="text-[15px] font-bold text-ink">{r.channel}</h3>
               <span
                 className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${
-                  r.tone === "warn" ? "bg-amber-50 text-amber-700" : "bg-accent-soft text-accent-dark"
+                  r.tone === "warn" ? "bg-amber-50 text-amber-700" : "bg-accent-soft text-accent-deep"
                 }`}
               >
                 {r.status}

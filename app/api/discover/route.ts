@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { PROSPECTS } from "@/lib/merchants";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Real supply-graph sourcing via Google Places (new Places API, Text Search).
 // Falls back to the mock supply graph when GOOGLE_PLACES_API_KEY is absent — so
@@ -38,7 +39,10 @@ function mockResults(q: string): DiscoveredMerchant[] {
 }
 
 export async function GET(req: Request) {
-  const q = new URL(req.url).searchParams.get("q") ?? "restaurants";
+  if (!rateLimit(req, "discover")) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
+  const q = (new URL(req.url).searchParams.get("q") ?? "restaurants").slice(0, 120);
   const key = process.env.GOOGLE_PLACES_API_KEY;
 
   if (!key) {

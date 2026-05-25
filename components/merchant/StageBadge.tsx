@@ -6,7 +6,7 @@ const STYLES: Record<Stage, string> = {
   "Proposal sent": "bg-amber-50 text-amber-700",
   Replied: "bg-violet-50 text-violet-700",
   "Call booked": "bg-indigo-50 text-indigo-700",
-  Onboarded: "bg-accent-soft text-accent-dark",
+  Onboarded: "bg-accent-soft text-accent-deep",
 };
 
 export default function StageBadge({ stage }: { stage: Stage }) {

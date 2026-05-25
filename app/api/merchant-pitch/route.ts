@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getProspect } from "@/lib/merchants";
 import { computeEconomics, templatePitch, type PitchResult } from "@/lib/pitch";
 import { archetypeFor } from "@/lib/archetypes";
+import { rateLimit } from "@/lib/ratelimit";
 
 const MODEL = "claude-opus-4-7";
 
@@ -40,8 +41,12 @@ const SCHEMA = {
 } as const;
 
 export async function POST(req: Request) {
+  if (!rateLimit(req, "merchant-pitch")) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
   const { id } = await req.json().catch(() => ({}));
-  const prospect = getProspect(id);
+  // `id` must resolve to a known prospect — no arbitrary input reaches the model.
+  const prospect = typeof id === "string" ? getProspect(id) : undefined;
   if (!prospect) return NextResponse.json({ error: "unknown prospect" }, { status: 404 });
 
   const econ = computeEconomics(prospect);
@@ -94,8 +99,26 @@ ${econLines}`;
 
     const text = message.content.find((b) => b.type === "text");
     if (!text || text.type !== "text") throw new Error("no text block");
-    const parsed = JSON.parse(text.text) as Omit<PitchResult, "source">;
-    return NextResponse.json({ ...parsed, source: "claude" } satisfies PitchResult);
+    const parsed = JSON.parse(text.text) as Partial<Omit<PitchResult, "source">>;
+
+    // Runtime schema guard — fall back to the template on any shape mismatch.
+    if (
+      typeof parsed.summary !== "string" ||
+      typeof parsed.emailSubject !== "string" ||
+      typeof parsed.emailBody !== "string" ||
+      typeof parsed.offerLine !== "string" ||
+      !Array.isArray(parsed.talkingPoints)
+    ) {
+      return NextResponse.json(templatePitch(prospect, econ));
+    }
+    return NextResponse.json({
+      summary: parsed.summary,
+      emailSubject: parsed.emailSubject,
+      emailBody: parsed.emailBody,
+      talkingPoints: parsed.talkingPoints.map(String),
+      offerLine: parsed.offerLine,
+      source: "claude",
+    } satisfies PitchResult);
   } catch {
     return NextResponse.json(templatePitch(prospect, econ));
   }

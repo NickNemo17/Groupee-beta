@@ -6,7 +6,7 @@ export default function ScoreMeter({ qual }: { qual: Qualification }) {
       <div className="flex items-center gap-4">
         <div
           className="grid h-16 w-16 shrink-0 place-items-center rounded-full text-[20px] font-extrabold text-white"
-          style={{ background: qual.score >= 75 ? "var(--color-accent)" : qual.score >= 55 ? "#d6a400" : "#9aa0a6" }}
+          style={{ background: qual.score >= 75 ? "var(--color-accent)" : qual.score >= 55 ? "var(--color-score-warm)" : "var(--color-score-cool)" }}
         >
           {qual.score}
         </div>

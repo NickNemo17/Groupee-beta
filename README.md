@@ -1,8 +1,13 @@
 # Groupee 🌿
 
-**A modern reinvention of Groupon.** Discovery-first, experience-first, and social — with honest all-in pricing instead of a race-to-the-bottom coupon feed. Recognizably in the Groupon ecosystem (the green), but a completely new feel.
+**A value-curated marketplace for local experiences — a reinvention of Groupon.** Browse genuinely good things to do nearby, plan them with friends, and book in a tap. No coupon dump: every listing clears a value bar, and prices are honest and all-in.
 
-> Beta prototype · Next.js 16 · React 19 · Tailwind v4 · MapLibre · mobile phone-framed
+Three things make it different:
+1. **Curated value, not discounts** — a StubHub-style **value score** gates the feed; you see "Great value," never a fake "$2,392 value" anchor.
+2. **Social by default** — invite friends, swipe to vote, auto-commit the winner, split the cost; or ask the **AI concierge** "something fun tonight under $50."
+3. **AI-sourced supply** — a merchant-side agent fleet finds local businesses and pitches them on *fair* terms, so the hard half of any marketplace (supply) actually scales. (See **Partner Studio**, below.)
+
+> Beta prototype · Next.js 16 · React 19 · Tailwind v4 · MapLibre · live Claude + ElevenLabs (optional keys)
 
 ---
 

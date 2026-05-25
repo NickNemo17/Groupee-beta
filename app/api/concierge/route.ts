@@ -2,6 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { EXPERIENCES } from "@/lib/data";
 import { getConciergeReply, dayPart, type DayPart } from "@/lib/concierge";
+import { cappedString } from "@/lib/validate";
+import { rateLimit } from "@/lib/ratelimit";
 
 // Latest Claude model. Swap to "claude-sonnet-4-6" or "claude-haiku-4-5" if you
 // want a snappier/cheaper concierge — opus is the most capable default.
@@ -66,8 +68,12 @@ function localResult(query: string, when: DayPart): ConciergeApiResult {
 }
 
 export async function POST(req: Request) {
-  const { query = "", when } = await req.json().catch(() => ({}));
-  const tod: DayPart = when ?? dayPart();
+  if (!rateLimit(req, "concierge")) {
+    return NextResponse.json({ error: "rate limited" }, { status: 429 });
+  }
+  const body = await req.json().catch(() => ({}));
+  const query = cappedString(body.query, 500) ?? "";
+  const tod: DayPart = body.when ?? dayPart();
 
   // No key → deterministic local engine (app still works out of the box).
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -100,10 +106,17 @@ export async function POST(req: Request) {
 
     const text = message.content.find((b) => b.type === "text");
     if (!text || text.type !== "text") throw new Error("no text block");
-    const parsed = JSON.parse(text.text) as { intro: string; picks: ConciergePick[] };
+    const parsed = JSON.parse(text.text) as { intro?: unknown; picks?: unknown };
 
+    // Runtime schema guard — never trust the model's shape.
+    if (typeof parsed.intro !== "string" || !Array.isArray(parsed.picks)) {
+      return NextResponse.json(localResult(query, tod));
+    }
     // Guard against hallucinated ids.
-    const valid = parsed.picks.filter((p) => EXPERIENCES.some((e) => e.id === p.id)).slice(0, 3);
+    const valid = (parsed.picks as ConciergePick[])
+      .filter((p) => p && typeof p.id === "string" && typeof p.reason === "string")
+      .filter((p) => EXPERIENCES.some((e) => e.id === p.id))
+      .slice(0, 3);
     if (valid.length === 0) return NextResponse.json(localResult(query, tod));
 
     return NextResponse.json({ intro: parsed.intro, picks: valid, source: "claude" });

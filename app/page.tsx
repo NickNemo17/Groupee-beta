@@ -9,6 +9,7 @@ import { prospectToDeal } from "@/lib/deals";
 import { useGroupee } from "@/lib/store";
 import { useMerchant } from "@/lib/merchantStore";
 import ExperienceCard from "@/components/ExperienceCard";
+import Wordmark from "@/components/Wordmark";
 
 const MapView = dynamic(() => import("@/components/MapView"), {
   ssr: false,
@@ -63,18 +64,14 @@ export default function ExplorePage() {
       {/* sticky header */}
       <div className="sticky top-0 z-30 bg-white/95 px-4 pb-2 pt-3 backdrop-blur">
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-wide text-accent-dark">
-              Groupee
-            </p>
-            <h1 className="text-[20px] font-bold leading-tight text-ink">
-              Santa Barbara, CA
-            </h1>
-          </div>
-          <div className="grid h-9 w-9 place-items-center rounded-full bg-accent-soft text-sm">
-            📍
+          <Wordmark />
+          <div className="flex items-center gap-1.5 rounded-full bg-accent-soft px-2.5 py-1 text-[12px] font-semibold text-accent-deep">
+            📍 Santa Barbara
           </div>
         </div>
+        <p className="animate-pop-in mt-2 text-[18px] font-bold leading-tight tracking-tight text-ink">
+          Local experiences worth your time.
+        </p>
 
         {/* search pill (Where / When / What) */}
         <div className="mt-3 flex items-center gap-2 rounded-full border border-hairline bg-white px-4 py-2.5 shadow-card">

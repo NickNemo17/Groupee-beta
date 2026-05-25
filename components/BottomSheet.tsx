@@ -27,14 +27,14 @@ export default function BottomSheet({
       <button
         aria-label="Close"
         onClick={onClose}
-        className="absolute inset-0 bg-black/40"
+        className="animate-fade-in absolute inset-0 bg-black/40"
       />
       <div className="animate-slide-up relative max-h-[88%] overflow-y-auto no-scrollbar rounded-t-3xl bg-white pb-6">
         <div className="sticky top-0 z-10 flex items-center justify-between bg-white px-5 pb-2 pt-4">
           <h2 className="text-[17px] font-bold text-ink">{title}</h2>
           <button
             onClick={onClose}
-            className="grid h-8 w-8 place-items-center rounded-full bg-canvas text-ink"
+            className="grid h-10 w-10 place-items-center rounded-full bg-canvas text-ink"
             aria-label="Close"
           >
             ✕

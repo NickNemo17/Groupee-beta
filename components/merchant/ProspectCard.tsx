@@ -9,13 +9,13 @@ export default function ProspectCard({ prospect }: { prospect: Prospect }) {
   return (
     <Link
       href={`/merchant/${prospect.id}`}
-      className="block rounded-xl border border-hairline bg-white p-3 shadow-card transition hover:border-accent/40 hover:shadow-pop"
+      className="block rounded-xl border border-hairline bg-white p-3 shadow-card transition-all duration-200 hover:border-accent/40 hover:shadow-pop"
     >
       <div className="flex items-start justify-between gap-2">
         <p className="text-[14px] font-semibold leading-tight text-ink">{prospect.name}</p>
         <span
           className="shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-bold text-white"
-          style={{ background: score >= 75 ? "var(--color-accent)" : score >= 55 ? "#d6a400" : "#9aa0a6" }}
+          style={{ background: score >= 75 ? "var(--color-accent)" : score >= 55 ? "var(--color-score-warm)" : "var(--color-score-cool)" }}
           title="Agent fit score"
         >
           {score}

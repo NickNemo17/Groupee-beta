@@ -37,6 +37,7 @@ export default function EconomicsTable({ e }: { e: Economics }) {
           <Row k="Incremental profit on empty nights" v={`~${usd(e.monthlyIncrementalProfit)}/mo`} strong />
         </dl>
         <p className="mt-2 text-[11px] text-muted">Groupon would force a public discount that cheapens the venue. We don&apos;t. + you keep every guest&apos;s contact.</p>
+        <p className="mt-1 text-[10px] italic text-muted">Comp value is a modeled estimate; merchant COGS is typically lower.</p>
       </div>
     );
   }
@@ -60,6 +61,7 @@ export default function EconomicsTable({ e }: { e: Economics }) {
           <Row k="Est. lifetime value / client" v={`~${usd(e.intro.ltv)}`} strong />
         </dl>
         <p className="mt-2 text-[11px] text-muted">You keep the client&apos;s contact — the opposite of a Groupon facial. Fixes the rebook problem.</p>
+        <p className="mt-1 text-[10px] italic text-muted">LTV is a modeled estimate (intro→repeat benchmark) — validated per partner in pilot.</p>
       </div>
     );
   }

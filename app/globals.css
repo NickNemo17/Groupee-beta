@@ -5,7 +5,10 @@
   /* Groupee palette — Groupon green, refreshed. One accent used sparingly. */
   --color-accent: #53a318;
   --color-accent-dark: #437f14;
+  --color-accent-deep: #2f5b0a; /* text on accent-soft — meets WCAG AA */
   --color-accent-soft: #eef6e4;
+  --color-score-warm: #b87d00; /* mid score / amber */
+  --color-score-cool: #6a6f76; /* low score / grey */
   --color-ink: #1a1a1a;
   --color-ink-2: #4a4a4a;
   --color-muted: #717171;
@@ -36,6 +39,13 @@ h1,
 h2,
 h3 {
   letter-spacing: -0.02em;
+}
+
+/* Visible keyboard focus everywhere (was missing — a11y gap). */
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 /* hide scrollbars inside the phone for a native feel */
@@ -87,4 +97,16 @@ h3 {
 }
 .animate-slide-up {
   animation: slide-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out both;
 }

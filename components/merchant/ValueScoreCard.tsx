@@ -1,7 +1,7 @@
 import { type ValueScore } from "@/lib/pitch";
 
 const VERDICT_STYLE: Record<string, { bg: string; text: string; ring: string }> = {
-  "Ship to feed": { bg: "bg-accent-soft", text: "text-accent-dark", ring: "var(--color-accent)" },
+  "Ship to feed": { bg: "bg-accent-soft", text: "text-accent-deep", ring: "var(--color-accent)" },
   "Tune the offer": { bg: "bg-amber-50", text: "text-amber-700", ring: "#d6a400" },
   Hold: { bg: "bg-rose-50", text: "text-rose-700", ring: "#e0484d" },
 };
