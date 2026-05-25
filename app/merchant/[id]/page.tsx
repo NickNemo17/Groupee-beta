@@ -4,10 +4,12 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useState } from "react";
 import { getProspect } from "@/lib/merchants";
-import { computeEconomics, qualify, type PitchResult } from "@/lib/pitch";
+import { computeEconomics, qualify, valueScore, type PitchResult } from "@/lib/pitch";
+import { archetypeFor } from "@/lib/archetypes";
 import { useMerchant } from "@/lib/merchantStore";
 import StageBadge from "@/components/merchant/StageBadge";
 import ScoreMeter from "@/components/merchant/ScoreMeter";
+import ValueScoreCard from "@/components/merchant/ValueScoreCard";
 import EconomicsTable from "@/components/merchant/EconomicsTable";
 import EmailPreview from "@/components/merchant/EmailPreview";
 import CallPanel from "@/components/merchant/CallPanel";
@@ -32,6 +34,9 @@ export default function ProspectWorkspace() {
 
   const econ = computeEconomics(prospect);
   const qual = qualify(prospect);
+  const value = valueScore(prospect, econ);
+  const arc = archetypeFor(prospect.category);
+  const blocked = value.verdict === "Hold"; // below the consumer value floor
   const pitch: PitchResult | undefined = pitches[id];
   const stage = stageOf(id);
   const approved = emailApproved[id];
@@ -58,9 +63,12 @@ export default function ProspectWorkspace() {
 
       <header className="mt-2 flex flex-wrap items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-[24px] font-extrabold tracking-tight text-ink">{prospect.name}</h1>
             <StageBadge stage={stage} />
+            <span className="rounded-full bg-ink px-2 py-0.5 text-[11px] font-semibold text-white">
+              {arc.label} · Mechanic {arc.mechanic}
+            </span>
           </div>
           <p className="text-[13px] text-muted">
             {prospect.category} · {prospect.neighborhood} · ★ {prospect.rating} ({prospect.reviewCount.toLocaleString()} reviews)
@@ -94,6 +102,7 @@ export default function ProspectWorkspace() {
             </div>
           </div>
           <ScoreMeter qual={qual} />
+          <ValueScoreCard value={value} />
         </div>
 
         {/* right: the workflow */}
@@ -179,15 +188,32 @@ export default function ProspectWorkspace() {
 
           {/* Step 4 — onboard */}
           {callDone && stage !== "Onboarded" && (
-            <Step n={4} title="Outcome">
+            <Step n={4} title="Outcome — value gate">
               <div className="rounded-xl border border-hairline bg-white p-4">
                 <p className="text-[13px] text-ink-2">Call transcript logged to CRM. Merchant agreed to a 72-hour deal launch.</p>
-                <button
-                  onClick={() => setStage(id, "Onboarded")}
-                  className="mt-3 rounded-btn bg-accent px-4 py-2.5 text-[14px] font-semibold text-white"
-                >
-                  Advance to Onboarded →
-                </button>
+                {blocked ? (
+                  <div className="mt-3 rounded-lg bg-rose-50 px-4 py-3">
+                    <p className="text-[13px] font-semibold text-rose-700">
+                      Below the consumer value floor (score {value.score}) — this deal can&apos;t reach the Groupee feed.
+                    </p>
+                    <p className="mt-1 text-[12px] text-rose-700/90">{value.lever}</p>
+                    <p className="mt-1 text-[12px] text-ink-2">
+                      We&apos;d rather show users nothing than something that isn&apos;t worth their time. Pass, or renegotiate the terms.
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <p className="mt-2 text-[12px] text-accent-dark">
+                      ✓ Value score {value.score} ({value.verdict}) — clears the feed floor.
+                    </p>
+                    <button
+                      onClick={() => setStage(id, "Onboarded")}
+                      className="mt-3 rounded-btn bg-accent px-4 py-2.5 text-[14px] font-semibold text-white"
+                    >
+                      Onboard → publish to feed →
+                    </button>
+                  </>
+                )}
               </div>
             </Step>
           )}

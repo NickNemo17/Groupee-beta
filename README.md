@@ -67,6 +67,10 @@ The workflow, end to end:
 5. **Voice call** — **consent-gated** (TCPA): the agent only dials after consent is logged, then delivers the pitch as an **audible ElevenLabs voice** (transcript-only without a key).
 6. **Pipeline + CRM** — Attio-style board tracks each prospect Discovered → … → Onboarded.
 
+**Vertical archetypes — the mechanic matches the inventory.** The agent doesn't ship one-size "30% off." Each category maps to one of three mechanics: **A** off-peak % fill (restaurants, social-entertainment, golf foursomes, tours), **B** access / value-add — *never* a public discount — for status inventory (nightclub tables, hotels), and **C** intro → regular for high-LTV services (beauty, fitness, recovery), where the win is the rebook, not the coupon. Economics adapt accordingly (discount vs. comped value-add vs. intro + lifetime value).
+
+**Value Score — the StubHub move, away from coupons.** Every prospect gets two independent scores: a *merchant fit* score (worth acquiring?) and a *consumer Value Score* (is the deal actually good enough to show users?). A desperate, mediocre spot can pass merchant-fit but **fails the value floor** — so it never reaches the feed. Only deals scoring ≥ 72 are publishable; below that the agent must tune the offer or pass. On the consumer side this surfaces as a **"Great value" badge** on every listing — the feed is curated value, not a coupon dump.
+
 **Real stack this stands in for:** Google Places/Foursquare + Clay (sourcing/enrichment) → Attio (CRM; note CRM ≠ ERP) → Instantly/Smartlead (email, warmup + SPF/DKIM/DMARC) → ElevenLabs Agents + Twilio (voice, consent-gated). The in-app version simulates sourcing + CRM and uses the real Claude and ElevenLabs APIs.
 
 ## Tech stack

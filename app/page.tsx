@@ -103,7 +103,7 @@ export default function ExplorePage() {
         <div className="flex-1 px-4 pb-24 pt-3">
           <p className="mb-3 text-[13px] text-muted">
             {items.length} {items.length === 1 ? "experience" : "experiences"} ·{" "}
-            <span className="text-accent-dark">honest, all-in pricing</span>
+            <span className="text-accent-dark">every listing clears our value bar</span>
           </p>
           <div className="flex flex-col gap-6">
             {items.map((e) => (

@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextResponse } from "next/server";
 import { getProspect } from "@/lib/merchants";
 import { computeEconomics, templatePitch, type PitchResult } from "@/lib/pitch";
+import { archetypeFor } from "@/lib/archetypes";
 
 const MODEL = "claude-opus-4-7";
 
@@ -16,7 +17,12 @@ Groupee's promise to merchants ("make it even"):
 - Honest, specific unit economics shown up front. No fake "value" anchors. No race to the bottom.
 - A group-sampler mechanic ("bring three friends, first round on the house") to drive trial.
 
-Write like the example from our thesis: cite the merchant's REAL specifics (their slow window, what their reviews praise, their category) and propose a concrete bundle. Be warm, concrete, and respectful of the owner's time. Never overstate. Use ONLY the economics numbers provided — do not invent figures.
+The offer MECHANIC must match the inventory (it's given to you per merchant):
+- Mechanic A (off-peak % fill — restaurants, bars, social-entertainment, golf, tours): a capped % discount in the slow window. For golf/social, sell the group UNIT (foursome, lane).
+- Mechanic B (access, NOT a discount — nightlife tables, hotels): NEVER propose a public % off — it cheapens the venue. Offer access/value-add (lowered minimum, comped bottle, day-pass + F&B credit) on slow nights.
+- Mechanic C (intro → regular — beauty, fitness, recovery): a generous intro on the first visit; the win is the rebook, so emphasize the merchant keeps the customer's contact and the lifetime value, not the one-off.
+
+Write like the example from our thesis: cite the merchant's REAL specifics (their slow window, what their reviews praise, their category) and propose a concrete bundle that fits the mechanic. Be warm, concrete, and respectful of the owner's time. Never overstate. Use ONLY the economics numbers provided — do not invent figures.
 
 Return JSON: a one-paragraph "summary" (the agent's internal rationale), an "emailSubject", an "emailBody" (personalized, includes the fair economics and a one-line opt-out), 5 short "talkingPoints" (what the agent would SAY on a call — conversational, first person, ~1 sentence each), and an "offerLine" (the group-sampler offer phrased for this merchant).`;
 
@@ -46,18 +52,37 @@ export async function POST(req: Request) {
 
   try {
     const client = new Anthropic();
+    const arc = archetypeFor(prospect.category);
+
+    let econLines: string;
+    if (econ.mechanic === "B") {
+      econLines = `MECHANIC B — ACCESS, NOT A DISCOUNT. Do NOT propose a public % off.
+- Value-add: ${econ.access?.comp}.
+- Merchant keeps ~$${econ.access?.keepFull}/${econ.unitLabel} after Groupee's ${econ.groupeeCommissionPct}% (a small ~$${econ.access?.compCost} comp); full price preserved.
+- Fills ${prospect.offPeakWindow} ${econ.unitLabel}s that would sit empty — ~$${econ.monthlyIncrementalProfit.toLocaleString()}/mo incremental.`;
+    } else if (econ.mechanic === "C") {
+      econLines = `MECHANIC C — INTRO → REGULAR. The deal is a loss-leader; the LTV is the point.
+- Intro ${econ.unitLabel} $${econ.intro?.introPrice} (${econ.discountPct}% off regular $${econ.regularPrice}).
+- Groupee commission ${econ.groupeeCommissionPct}% (Groupon ~${econ.grouponCommissionPct}%).
+- With a normal rebook rate, ~$${econ.intro?.ltv.toLocaleString()} lifetime value per new client. Merchant KEEPS the client's contact.
+- Capped ${econ.redemptionCapPerDay}/day, ${prospect.offPeakWindow} only.`;
+    } else {
+      econLines = `MECHANIC A — OFF-PEAK % FILL${arc.groupUnit ? ` (sell the ${econ.unitLabel} — a group of ${arc.groupUnit})` : ""}.
+- Regular ~$${econ.regularPrice}; deal $${econ.dealPrice} (${econ.discountPct}% off).
+- Groupee commission ${econ.groupeeCommissionPct}% vs Groupon ~${econ.grouponCommissionPct}%.
+- Keeps ~$${econ.groupeeKeepPerCustomer}/${econ.unitLabel} vs ~$${econ.grouponKeepPerCustomer} on Groupon.
+- Cap ${econ.redemptionCapPerDay}/day; ~$${econ.monthlyIncrementalProfit.toLocaleString()}/mo incremental profit on empty seats.`;
+    }
+
     const userContext = `Merchant: ${prospect.name} — ${prospect.category} in ${prospect.neighborhood}, ${prospect.rating}★ (${prospect.reviewCount} reviews).
 Owner: ${prospect.contact.owner}.
+Archetype: ${arc.label} — ${arc.mechanicName}. ${arc.offerStyle}
 Slow window: ${prospect.offPeakWindow} (~${prospect.offPeakUtilizationPct}% full).
 Signals (use these — they are the personalization):
 ${prospect.signals.map((s) => `- ${s}`).join("\n")}
 
 Economics to cite VERBATIM (already computed — do not change):
-- Regular price ~$${econ.regularPrice}; Groupee deal price $${econ.dealPrice} (${econ.discountPct}% off).
-- Groupee commission ${econ.groupeeCommissionPct}% vs Groupon ~${econ.grouponCommissionPct}%.
-- Merchant keeps ~$${econ.groupeeKeepPerCustomer}/guest on Groupee vs ~$${econ.grouponKeepPerCustomer}/guest on Groupon.
-- Redemption cap ${econ.redemptionCapPerDay}/day; ~${econ.estMonthlyCovers} incremental covers/mo.
-- ~$${econ.monthlyIncrementalProfit.toLocaleString()}/mo incremental profit on otherwise-empty seats.`;
+${econLines}`;
 
     const message = await client.messages.create({
       model: MODEL,

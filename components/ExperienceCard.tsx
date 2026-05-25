@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { type Experience } from "@/lib/data";
+import { experienceValue } from "@/lib/value";
 import SmartImg from "./SmartImg";
 import HeartButton from "./HeartButton";
+import ValueBadge from "./ValueBadge";
 
 export default function ExperienceCard({
   exp,
@@ -15,6 +17,7 @@ export default function ExperienceCard({
 }) {
   const [idx, setIdx] = useState(0);
   const imgs = exp.images;
+  const val = experienceValue(exp);
 
   return (
     <Link href={`/experience/${exp.id}`} className="block group">
@@ -26,11 +29,7 @@ export default function ExperienceCard({
           className="h-full w-full object-cover transition group-active:scale-[1.02]"
         />
 
-        {exp.localFavorite && (
-          <span className="absolute left-3 top-3 rounded-full bg-white/95 px-2.5 py-1 text-[11px] font-semibold text-ink shadow-card">
-            Local favorite
-          </span>
-        )}
+        <ValueBadge tier={val.tier} className="absolute left-3 top-3" />
 
         <HeartButton id={exp.id} className="absolute right-2.5 top-2.5 h-9 w-9" />
 
@@ -71,7 +70,7 @@ export default function ExperienceCard({
           </span>
         </div>
         <p className="mt-0.5 text-[13px] text-muted line-clamp-1">
-          {exp.neighborhood} · {exp.distanceMi} mi away
+          {exp.neighborhood} · {exp.distanceMi} mi away{exp.localFavorite ? " · Local favorite" : ""}
         </p>
         <p className="mt-1 text-[14px] text-ink">
           <span className="font-semibold">${exp.price}</span>

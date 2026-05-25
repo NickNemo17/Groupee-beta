@@ -4,6 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { getExperience } from "@/lib/data";
+import { experienceValue } from "@/lib/value";
+import ValueBadge from "@/components/ValueBadge";
 import SmartImg from "@/components/SmartImg";
 import HeartButton from "@/components/HeartButton";
 import BottomSheet from "@/components/BottomSheet";
@@ -33,6 +35,8 @@ export default function ExperienceDetail() {
     );
   }
 
+  const val = experienceValue(exp);
+
   return (
     <div className="relative flex h-full flex-col">
       <div className="flex-1 overflow-y-auto no-scrollbar pb-28">
@@ -58,10 +62,13 @@ export default function ExperienceDetail() {
         <div className="px-4">
           {/* title block */}
           <div className="mt-4">
-            {exp.localFavorite && (
-              <span className="text-[12px] font-semibold text-accent-dark">★ Local favorite</span>
-            )}
-            <h1 className="mt-1 text-[22px] font-bold leading-tight text-ink">{exp.title}</h1>
+            <div className="flex items-center gap-2">
+              <ValueBadge tier={val.tier} />
+              {exp.localFavorite && (
+                <span className="text-[12px] font-semibold text-accent-dark">★ Local favorite</span>
+              )}
+            </div>
+            <h1 className="mt-1.5 text-[22px] font-bold leading-tight text-ink">{exp.title}</h1>
             <p className="mt-1 text-[14px] text-muted">
               {exp.category} · {exp.neighborhood} · {Math.round(exp.durationMin / 60 * 10) / 10}h
             </p>
@@ -77,8 +84,8 @@ export default function ExperienceDetail() {
             </div>
             <div className="h-10 w-px bg-hairline" />
             <div>
-              <p className="text-[14px] font-semibold text-ink">Loved by guests</p>
-              <p className="text-[13px] text-muted">{exp.reviewCount} verified reviews</p>
+              <p className="text-[14px] font-semibold text-ink">{val.tier} · cleared our value bar</p>
+              <p className="text-[13px] text-muted">{val.blurb}</p>
             </div>
           </div>
 
