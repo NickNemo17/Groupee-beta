@@ -523,7 +523,7 @@ export const EXPERIENCES: Experience[] = [
     rating: 4.94,
     reviewCount: 201,
     durationMin: 150,
-    images: ["1493106641515-6b5631de4bb9", "1565299624946-b28f40a0ae38", "1504674900247-0877df9cc836"].map(U),
+    images: ["1556761223-4c4282c73f77", "1565299624946-b28f40a0ae38", "1504674900247-0877df9cc836"].map(U),
     blurb: "Roll, cut, and eat your own pasta with a glass of wine in hand.",
     description:
       "A hands-on evening making pasta from scratch — dough to plate — with a Bolognese-born chef. You eat what you make, family-style, with wine. The most-booked class on Groupee.",
