@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import { CATEGORIES, EXPERIENCES, type Category } from "@/lib/data";
+import { experienceValue } from "@/lib/value";
 import { useGroupee } from "@/lib/store";
 import ExperienceCard from "@/components/ExperienceCard";
 
@@ -33,14 +34,16 @@ export default function ExplorePage() {
           e.tags.some((tag) => tag.includes(t))
       );
     }
+    // Rank best-value-first; taste only nudges category to the top.
+    const vs = (e: (typeof EXPERIENCES)[number]) => experienceValue(e).score;
     if (taste.done && taste.categories.length) {
       list.sort((a, b) => {
         const av = taste.categories.includes(a.category) ? 1 : 0;
         const bv = taste.categories.includes(b.category) ? 1 : 0;
-        return bv - av || b.rating - a.rating;
+        return bv - av || vs(b) - vs(a);
       });
     } else {
-      list.sort((a, b) => b.rating - a.rating);
+      list.sort((a, b) => vs(b) - vs(a));
     }
     return list;
   }, [cat, q, taste]);
@@ -103,7 +106,7 @@ export default function ExplorePage() {
         <div className="flex-1 px-4 pb-24 pt-3">
           <p className="mb-3 text-[13px] text-muted">
             {items.length} {items.length === 1 ? "experience" : "experiences"} ·{" "}
-            <span className="text-accent-dark">every listing clears our value bar</span>
+            <span className="text-accent-dark">best value first · every listing clears the bar</span>
           </p>
           <div className="flex flex-col gap-6">
             {items.map((e) => (
