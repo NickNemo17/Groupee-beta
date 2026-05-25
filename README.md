@@ -50,6 +50,25 @@ No current app closes the full loop *concierge → group vote → committed plan
 | 235 spam emails a month | Per-category notification cadence (daily / weekly / off) |
 | Inflated "$2,392 value" anchors | No fake anchors — just the real, all-in price |
 
+## Supply side — Partner Studio (`/merchant`)
+
+The harder half of any local marketplace is **supply density**, not consumer demand. Partner Studio is the merchant-acquisition console: an agent fleet that sources local businesses, qualifies them, and pitches them **fairly** — the opposite of Groupon's race-to-the-bottom. (Open `http://localhost:3000/merchant` — it's a full-width desktop tool, not the phone frame.)
+
+| Pipeline | Reasoned proposal | Consent-gated voice call |
+|---|---|---|
+| ![Pipeline](docs/screenshots/merchant-pipeline.png) | ![Proposal](docs/screenshots/merchant-proposal.png) | ![Call](docs/screenshots/merchant-call.png) |
+
+The workflow, end to end:
+
+1. **Supply graph** — a nightly-refreshed map of every local merchant with a structured deal, assembled from Google Business, Yelp, Instagram/TikTok, menu PDFs, OpenTable/Resy, sites, and Reddit (simulated here).
+2. **Qualification** — each prospect scored on off-peak upside, review velocity, margin headroom, and quality.
+3. **Reasoned proposal ("make it even")** — generated **live by Claude**, leading with honest unit economics: a low ~10% commission (vs Groupon's ~50%), a hard redemption cap so it *fills* off-peak instead of cannibalizing peak, the merchant keeps every customer's contact for repeat visits, plus a "bring three friends, first round on the house" group offer. The math is computed in code (always correct); Claude writes the personalized narrative.
+4. **Outreach email** — merchant-specific, behind a human **Approve & send** gate (CAN-SPAM: opt-out included).
+5. **Voice call** — **consent-gated** (TCPA): the agent only dials after consent is logged, then delivers the pitch as an **audible ElevenLabs voice** (transcript-only without a key).
+6. **Pipeline + CRM** — Attio-style board tracks each prospect Discovered → … → Onboarded.
+
+**Real stack this stands in for:** Google Places/Foursquare + Clay (sourcing/enrichment) → Attio (CRM; note CRM ≠ ERP) → Instantly/Smartlead (email, warmup + SPF/DKIM/DMARC) → ElevenLabs Agents + Twilio (voice, consent-gated). The in-app version simulates sourcing + CRM and uses the real Claude and ElevenLabs APIs.
+
 ## Tech stack
 
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
@@ -66,16 +85,17 @@ npm run dev
 # open http://localhost:3000  (narrow the window or use device mode for the phone frame)
 ```
 
-### Optional: live AI concierge
+### Optional keys (everything works without them)
 
-The concierge works out of the box with a deterministic local engine. To use the **live Claude API**, add a key:
+Copy `.env.example` to `.env.local` and fill in what you have:
 
 ```bash
-echo "ANTHROPIC_API_KEY=sk-ant-..." > .env.local
-npm run dev
+cp .env.example .env.local
+# ANTHROPIC_API_KEY  — live Claude for the consumer concierge AND merchant proposals/emails
+# ELEVENLABS_API_KEY — makes the merchant voice-agent pitch audible at /merchant
 ```
 
-Without a key it transparently falls back to the local engine, so the app always works.
+With no keys, the concierge and merchant pitches fall back to a deterministic local engine and the voice call shows a transcript only — the app always runs.
 
 ## Project structure
 
@@ -86,14 +106,22 @@ app/
   concierge/               AI concierge
   groups/  groups/[id]/    Group create → vote → commit → split
   trips/   profile/        Trips, taste onboarding, membership, settings
-  api/concierge/           Claude API route (optional)
-components/                ExperienceCard, MapView, BookingSheet, SwipeDeck, SplitPanel, …
+  merchant/                Supply-side Partner Studio (desktop): pipeline, supply graph,
+                           compliance, and the per-prospect agent workspace ([id])
+  api/concierge/           Claude API route — consumer concierge (optional key)
+  api/merchant-pitch/      Claude API route — merchant proposal + email (optional key)
+  api/voice/               ElevenLabs TTS proxy for the voice call (optional key)
+components/                ExperienceCard, MapView, … + merchant/ (PipelineBoard, ScoreMeter,
+                           EconomicsTable, EmailPreview, CallPanel, …)
 lib/
-  data.ts                  ~18 Santa Barbara experiences (mock)
+  data.ts                  ~18 Santa Barbara experiences (mock, onboarded)
   concierge.ts             local concierge engine (Claude-swappable)
   store.tsx                wishlists, groups, votes, trips
+  merchants.ts             ~12 prospect merchants — the simulated supply graph
+  pitch.ts                 "make it even" economics engine + template fallback
+  merchantStore.tsx        pipeline stage / consent / generated artifacts
 ```
 
 ---
 
-*Beta — built as a design exploration. Mock data; no real payments or merchant integrations.*
+*Beta — built as a design exploration. Mock marketplace data and no real payments or live dialing; the Claude (proposals/concierge) and ElevenLabs (voice) integrations are real when keys are provided.*
