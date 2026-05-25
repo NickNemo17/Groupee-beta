@@ -6,7 +6,9 @@ import { type ReactNode } from "react";
 
 const NAV = [
   { href: "/merchant", label: "Pipeline", icon: "▦" },
+  { href: "/merchant/fleet", label: "Fleet", icon: "⛁" },
   { href: "/merchant/supply", label: "Supply graph", icon: "◎" },
+  { href: "/merchant/impact", label: "Impact", icon: "📈" },
   { href: "/merchant/compliance", label: "Compliance", icon: "✓" },
 ];
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PROSPECTS, SUPPLY_STATS } from "@/lib/merchants";
 import { ARCHETYPES, archetypeFor, type Archetype } from "@/lib/archetypes";
+import DiscoverPanel from "@/components/merchant/DiscoverPanel";
 
 export const metadata = { title: "Groupee Partner Studio — Supply graph" };
 
@@ -31,6 +32,8 @@ export default function SupplyGraphPage() {
           the offer mechanic the agent will use.
         </p>
       </header>
+
+      <DiscoverPanel />
 
       <div className="space-y-7">
         {groups.map(({ arc, items }) => (

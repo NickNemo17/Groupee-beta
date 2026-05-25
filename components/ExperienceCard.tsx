@@ -30,6 +30,11 @@ export default function ExperienceCard({
         />
 
         <ValueBadge tier={val.tier} className="absolute left-3 top-3" />
+        {exp.newOnGroupee && (
+          <span className="absolute left-3 top-11 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold text-accent-dark shadow-card">
+            ✦ New on Groupee
+          </span>
+        )}
 
         <HeartButton id={exp.id} className="absolute right-2.5 top-2.5 h-9 w-9" />
 

@@ -56,6 +56,9 @@ export interface Experience {
   indoor: boolean;
   goodForGroups: boolean;
   distanceMi: number;
+  // set when this listing was just onboarded by the supply-side agent
+  newOnGroupee?: boolean;
+  offer?: string;
 }
 
 const U = (id: string) =>

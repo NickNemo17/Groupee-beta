@@ -71,6 +71,8 @@ The workflow, end to end:
 
 **Value Score — the StubHub move, away from coupons.** Every prospect gets two independent scores: a *merchant fit* score (worth acquiring?) and a *consumer Value Score* (is the deal actually good enough to show users?). A desperate, mediocre spot can pass merchant-fit but **fails the value floor** — so it never reaches the feed. Only deals scoring ≥ 72 are publishable; below that the agent must tune the offer or pass. On the consumer side this surfaces as a **"Great value" badge** on every listing — the feed is curated value, not a coupon dump.
 
+**Closed loop + ops surfaces.** Onboarding a merchant in Partner Studio **publishes it as a live, value-gated deal in the consumer feed** (price from the deal economics, its archetype offer, a "New on Groupee" tag) — the two halves are one system. Plus: a **Fleet** view that scores every prospect in parallel with a bulk "approve all Ship-grade" (the ~10k/wk-vs-100-BDR claim made tangible), an **Impact** dashboard with the board-letter KPIs (value-pass rate, verdict + mechanic mix, projected merchant profit), real **Gmail/Calendar deep-link outreach** from the workspace (prefilled, keyless), and live **Google Places discovery** on the supply graph (mock fallback without a key).
+
 **Real stack this stands in for:** Google Places/Foursquare + Clay (sourcing/enrichment) → Attio (CRM; note CRM ≠ ERP) → Instantly/Smartlead (email, warmup + SPF/DKIM/DMARC) → ElevenLabs Agents + Twilio (voice, consent-gated). The in-app version simulates sourcing + CRM and uses the real Claude and ElevenLabs APIs.
 
 ## Tech stack

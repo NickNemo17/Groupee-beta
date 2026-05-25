@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { getExperience } from "@/lib/data";
+import { resolveListing } from "@/lib/deals";
 import { experienceValue } from "@/lib/value";
 import ValueBadge from "@/components/ValueBadge";
 import SmartImg from "@/components/SmartImg";
@@ -21,7 +22,7 @@ const MiniMap = dynamic(() => import("@/components/MiniMap"), {
 export default function ExperienceDetail() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const exp = getExperience(id);
+  const exp = resolveListing(id, getExperience(id));
   const [sheet, setSheet] = useState<null | "book" | "group">(null);
 
   if (!exp) {

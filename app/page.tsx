@@ -2,9 +2,12 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
-import { CATEGORIES, EXPERIENCES, type Category } from "@/lib/data";
+import { CATEGORIES, EXPERIENCES, type Category, type Experience } from "@/lib/data";
 import { experienceValue } from "@/lib/value";
+import { PROSPECTS } from "@/lib/merchants";
+import { prospectToDeal } from "@/lib/deals";
 import { useGroupee } from "@/lib/store";
+import { useMerchant } from "@/lib/merchantStore";
 import ExperienceCard from "@/components/ExperienceCard";
 
 const MapView = dynamic(() => import("@/components/MapView"), {
@@ -18,12 +21,19 @@ const MapView = dynamic(() => import("@/components/MapView"), {
 
 export default function ExplorePage() {
   const { taste } = useGroupee();
+  const { stageOf } = useMerchant();
   const [cat, setCat] = useState<Category | "All">("All");
   const [q, setQ] = useState("");
   const [view, setView] = useState<"list" | "map">("list");
 
+  // Deals the supply-side agent has onboarded join the live feed.
+  const onboardedDeals = useMemo<Experience[]>(
+    () => PROSPECTS.filter((p) => stageOf(p.id) === "Onboarded").map(prospectToDeal),
+    [stageOf]
+  );
+
   const items = useMemo(() => {
-    let list = EXPERIENCES.slice();
+    let list: Experience[] = [...onboardedDeals, ...EXPERIENCES];
     if (cat !== "All") list = list.filter((e) => e.category === cat);
     if (q.trim()) {
       const t = q.toLowerCase();
@@ -35,7 +45,7 @@ export default function ExplorePage() {
       );
     }
     // Rank best-value-first; taste only nudges category to the top.
-    const vs = (e: (typeof EXPERIENCES)[number]) => experienceValue(e).score;
+    const vs = (e: Experience) => experienceValue(e).score;
     if (taste.done && taste.categories.length) {
       list.sort((a, b) => {
         const av = taste.categories.includes(a.category) ? 1 : 0;
@@ -46,7 +56,7 @@ export default function ExplorePage() {
       list.sort((a, b) => vs(b) - vs(a));
     }
     return list;
-  }, [cat, q, taste]);
+  }, [cat, q, taste, onboardedDeals]);
 
   return (
     <div className="flex h-full flex-col">

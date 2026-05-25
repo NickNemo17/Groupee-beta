@@ -6,6 +6,7 @@ import { useState } from "react";
 import { getProspect } from "@/lib/merchants";
 import { computeEconomics, qualify, valueScore, type PitchResult } from "@/lib/pitch";
 import { archetypeFor } from "@/lib/archetypes";
+import { gmailComposeUrl, calendarTemplateUrl, tomorrowSlot } from "@/lib/outreach";
 import { useMerchant } from "@/lib/merchantStore";
 import StageBadge from "@/components/merchant/StageBadge";
 import ScoreMeter from "@/components/merchant/ScoreMeter";
@@ -143,15 +144,32 @@ export default function ProspectWorkspace() {
                 {!approved ? (
                   <button
                     onClick={() => {
+                      window.open(
+                        gmailComposeUrl(prospect.contact.email, pitch.emailSubject, pitch.emailBody),
+                        "_blank"
+                      );
                       approveEmail(id);
                       if (stage === "Discovered" || stage === "Qualified") setStage(id, "Proposal sent");
                     }}
                     className="rounded-btn bg-ink px-4 py-2.5 text-[14px] font-semibold text-white"
                   >
-                    Approve &amp; send
+                    Approve &amp; open in Gmail
                   </button>
                 ) : (
-                  <span className="text-[13px] font-semibold text-accent-dark">✓ Sent · CAN-SPAM compliant (opt-out included)</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-[13px] font-semibold text-accent-dark">✓ Drafted in Gmail · CAN-SPAM (opt-out included)</span>
+                    <button
+                      onClick={() =>
+                        window.open(
+                          gmailComposeUrl(prospect.contact.email, pitch.emailSubject, pitch.emailBody),
+                          "_blank"
+                        )
+                      }
+                      className="text-[12px] text-muted hover:text-ink-2"
+                    >
+                      reopen
+                    </button>
+                  </div>
                 )}
               </div>
             </Step>
@@ -177,9 +195,29 @@ export default function ProspectWorkspace() {
                 </div>
               ) : (
                 <>
-                  <p className="mb-2 text-[12px] text-accent-dark">
-                    ✓ Consent logged {new Date(consentAt).toLocaleString()} · DNC-scrubbed
-                  </p>
+                  <div className="mb-2 flex items-center gap-3">
+                    <p className="text-[12px] text-accent-dark">
+                      ✓ Consent logged {new Date(consentAt).toLocaleString()} · DNC-scrubbed
+                    </p>
+                    <button
+                      onClick={() => {
+                        const slot = tomorrowSlot();
+                        window.open(
+                          calendarTemplateUrl({
+                            title: `Groupee × ${prospect.name} — partnership call`,
+                            details: pitch!.talkingPoints.join("\n\n"),
+                            location: prospect.contact.phone,
+                            start: slot.start,
+                            end: slot.end,
+                          }),
+                          "_blank"
+                        );
+                      }}
+                      className="rounded-full border border-hairline px-3 py-1 text-[12px] font-semibold text-ink-2 hover:border-accent"
+                    >
+                      📅 Add to Calendar
+                    </button>
+                  </div>
                   <CallPanel prospect={prospect} talkingPoints={pitch!.talkingPoints} onComplete={() => setCallDone(true)} />
                 </>
               )}
@@ -219,8 +257,14 @@ export default function ProspectWorkspace() {
           )}
           {stage === "Onboarded" && (
             <div className="rounded-xl bg-accent-soft px-4 py-4 text-center">
-              <p className="text-[15px] font-bold text-accent-dark">🎉 {prospect.name} onboarded</p>
+              <p className="text-[15px] font-bold text-accent-dark">🎉 {prospect.name} is live on Groupee</p>
               <p className="text-[12px] text-ink-2">Deal ships in 72 hours · merchant keeps their customer data · fair from day one.</p>
+              <Link
+                href={`/experience/partner-${id}`}
+                className="mt-3 inline-block rounded-btn bg-ink px-4 py-2.5 text-[14px] font-semibold text-white"
+              >
+                View the live consumer listing →
+              </Link>
             </div>
           )}
         </div>
