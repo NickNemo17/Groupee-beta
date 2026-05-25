@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // react-leaflet does not survive Strict Mode's mount/unmount/remount cleanly
+  // (the Leaflet map instance ends up with a corrupted internal size). Off.
+  reactStrictMode: false,
 };
 
 export default nextConfig;

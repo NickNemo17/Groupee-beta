@@ -1,26 +1,90 @@
 @import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* Groupee palette — one accent used sparingly, otherwise ink-on-white */
+  --color-accent: #ff5a5f;
+  --color-accent-dark: #e04347;
+  --color-accent-soft: #fff0f0;
+  --color-ink: #1a1a1a;
+  --color-ink-2: #4a4a4a;
+  --color-muted: #717171;
+  --color-hairline: #ebebeb;
+  --color-canvas: #f6f6f4;
+  --color-gold: #f0a500;
+
+  --radius-card: 16px;
+  --radius-btn: 12px;
+
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.02em;
+}
+
+/* hide scrollbars inside the phone for a native feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* one subtle shadow tier, modern */
+.shadow-card {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+.shadow-pop {
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+}
+
+/* maplibre tweaks */
+.maplibregl-ctrl-attrib {
+  font-size: 9px;
+}
+.maplibregl-ctrl-bottom-right {
+  opacity: 0.6;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-pop-in {
+  animation: pop-in 0.25s ease-out both;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
