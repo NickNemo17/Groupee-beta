@@ -49,6 +49,7 @@ export interface Experience {
     superhost: boolean;
     since: string;
     responseRate: number;
+    bio?: string;
   };
   reviews: Review[];
   localFavorite: boolean;
@@ -602,6 +603,14 @@ export const EXPERIENCES: Experience[] = [
 
 export function getExperience(id: string): Experience | undefined {
   return EXPERIENCES.find((e) => e.id === id);
+}
+
+// A short business bio for the operator block (uses an authored bio if present,
+// else derives a clean sentence — never gimmicky "response rate" metrics).
+export function operatorBio(e: Experience): string {
+  if (e.host.bio) return e.host.bio;
+  const tone = e.host.superhost ? "a top-rated " : "an independent ";
+  return `${e.host.name} runs ${tone}local spot in ${e.neighborhood} — ${e.rating.toFixed(2)}★ across ${e.reviewCount.toLocaleString()} reviews.`;
 }
 
 export function priceLabel(n: number): string {

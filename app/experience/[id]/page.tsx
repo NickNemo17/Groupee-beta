@@ -3,10 +3,11 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { getExperience } from "@/lib/data";
+import { getExperience, operatorBio } from "@/lib/data";
 import { resolveListing } from "@/lib/deals";
 import { experienceValue } from "@/lib/value";
 import ValueBadge from "@/components/ValueBadge";
+import ValueBreakdown from "@/components/ValueBreakdown";
 import SmartImg from "@/components/SmartImg";
 import HeartButton from "@/components/HeartButton";
 import BottomSheet from "@/components/BottomSheet";
@@ -68,7 +69,7 @@ export default function ExperienceDetail() {
           {/* title block */}
           <div className="mt-4">
             <div className="flex items-center gap-2">
-              <ValueBadge tier={val.tier} />
+              <ValueBadge tier={val.tier} value={val} />
               {exp.localFavorite && (
                 <span className="text-[12px] font-semibold text-accent-dark">★ Local favorite</span>
               )}
@@ -101,21 +102,23 @@ export default function ExperienceDetail() {
             </div>
           </div>
 
-          {/* host */}
-          <div className="mt-4 flex items-center gap-3 border-b border-hairline pb-4">
-            <img src={exp.host.avatar} alt={exp.host.name} className="h-12 w-12 rounded-full object-cover" />
+          {/* how the value is determined */}
+          <ValueBreakdown value={val} className="mt-4" />
+
+          {/* operator */}
+          <div className="mt-4 flex items-start gap-3 border-b border-hairline pb-4">
+            <img src={exp.host.avatar} alt={exp.host.name} className="h-12 w-12 shrink-0 rounded-full object-cover" />
             <div className="flex-1">
               <p className="text-[15px] font-semibold text-ink">
-                Hosted by {exp.host.name}
+                Run by {exp.host.name}
                 {exp.host.superhost && (
                   <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-deep">
-                    Superhost
+                    ✓ Top-rated operator
                   </span>
                 )}
               </p>
-              <p className="text-[13px] text-muted">
-                Host since {exp.host.since} · {exp.host.responseRate}% response rate
-              </p>
+              <p className="mt-0.5 text-[13px] leading-snug text-ink-2">{operatorBio(exp)}</p>
+              <p className="mt-1 text-[12px] text-muted">Operating since {exp.host.since} · vetted by Groupee</p>
             </div>
           </div>
 

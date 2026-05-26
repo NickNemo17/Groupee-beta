@@ -20,7 +20,7 @@ export default function ExperienceCard({
   const val = experienceValue(exp);
 
   return (
-    <Link href={`/experience/${exp.id}`} className="block group">
+    <Link href={`/experience/${exp.id}`} className="group relative block">
       <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-hairline">
         <SmartImg
           src={imgs[idx]}
@@ -29,7 +29,6 @@ export default function ExperienceCard({
           className="h-full w-full object-cover transition group-active:scale-[1.02]"
         />
 
-        <ValueBadge tier={val.tier} className="absolute left-3 top-3" />
         {exp.newOnGroupee && (
           <span className="absolute left-3 top-11 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold text-accent-deep shadow-card">
             ✦ New partner
@@ -57,6 +56,9 @@ export default function ExperienceCard({
           </div>
         )}
       </div>
+
+      {/* value badge lives outside the clipped image so its hover breakdown shows */}
+      <ValueBadge tier={val.tier} value={val} className="absolute left-3 top-3 z-20" />
 
       <div className="mt-2.5">
         {reason && (

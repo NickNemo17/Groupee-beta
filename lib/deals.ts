@@ -100,6 +100,7 @@ export function prospectToDeal(p: Prospect): Experience {
       superhost: false,
       since: "2026",
       responseRate: 100,
+      bio: `${p.contact.owner} runs ${p.name}, a ${p.rating}★ ${p.category.toLowerCase()} in ${p.neighborhood}. ${p.signals[0]}.`,
     },
     reviews: [newReview],
     localFavorite: false,
