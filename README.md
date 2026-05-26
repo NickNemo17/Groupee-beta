@@ -19,30 +19,52 @@ Groupon's decline is well documented (Wharton's *"Death of the Daily Deal"*, the
 
 1. **AI concierge** — "find me something tonight," context-aware (time of day), answering with visual cards and a *why you're seeing this* reason — not a wall of text.
 2. **Groups** — invite friends, swipe to vote, the winner auto-commits to a shared plan, and costs split in-app.
-3. **Maps** — a modern map with price-pin markers and a synced card carousel.
+3. **Maps** — a map with **value-score pins** (the score + a category icon, not a price) that re-filter as you switch categories, plus a synced card carousel.
 
 No current app closes the full loop *concierge → group vote → committed plan → split cost*. That whitespace is the beta's reason to exist.
 
 ## Screens
 
-| Explore | Map | Experience |
+| Explore — ranked by value | Experience detail | Business profile |
 |---|---|---|
-| ![Explore](docs/screenshots/explore.png) | ![Map](docs/screenshots/map.png) | ![Detail](docs/screenshots/detail.png) |
+| ![Explore](docs/screenshots/explore.png) | ![Detail](docs/screenshots/detail.png) | ![Business](docs/screenshots/business.png) |
 
-| AI Concierge | Group voting | Split the cost |
+| Map — value-score pins | AI concierge | Groups — swipe to vote |
 |---|---|---|
-| ![Concierge](docs/screenshots/concierge.png) | ![Group voting](docs/screenshots/group-vote.png) | ![Split](docs/screenshots/group-split.png) |
+| ![Map](docs/screenshots/map.png) | ![Concierge](docs/screenshots/concierge.png) | ![Group voting](docs/screenshots/group-vote.png) |
+
+## Walkthrough — take the tour
+
+Run it (below), then follow the click-path. Two loops to see: the **consumer** loop, and the **supply → consumer** loop that fills it.
+
+**Consumer (`/`)**
+1. **Explore** — the feed is **ranked by value**, not by ad spend. Every card carries a score seal; the top pick gets the magenta ring.
+2. **Open a listing** — the **score + factor breakdown lead**, then the photos. Scroll to the **operator** card — it's a *business*, not a person; tap it.
+3. **Business profile** — cover photo, authored bio, and **every deal that business runs on Groupee**.
+4. **Map** (toggle from Explore) — pins show **score + a category icon**. Switch the category pill and the **map re-filters** with the feed.
+5. **Concierge** — ask *"something fun tonight under $50"*; it answers with cards + a *why you're seeing this* reason (live Claude when a key is set).
+6. **Groups** — start a plan, share the 4-letter code, **swipe to vote** (hidden until everyone's in), auto-commit the winner, then **split the cost** — fee-free for Groupee+ members.
+
+| Groups — split the cost |
+|---|
+| ![Split](docs/screenshots/group-split.png) |
+
+**Supply — Partner Studio (`/merchant`, desktop)**
+7. **Pipeline** — the agent fleet sources local businesses and scores each on *merchant fit* **and** a *consumer value floor*; only deals ≥ 72 can publish.
+8. **Open a prospect** — generate the **reasoned proposal** (live Claude, honest unit economics), **Approve & send** the email (CAN-SPAM gated), log consent, then the **consent-gated voice call** (audible ElevenLabs with a key).
+9. **Onboard** — the prospect **publishes straight into the consumer feed** as a live, value-gated deal tagged **"New partner"**. That's the closed loop: the two halves are one system.
 
 ## Features
 
 - **Explore** — search-first home, category pills, photo-first cards, list ⇄ map toggle.
-- **Map** — MapLibre + CARTO Positron basemap, price-pill markers, active-pin highlight, card carousel.
-- **Experience detail** — hero gallery, oversized rating, host card, what's-included, reviews, neighborhood map, and a sticky book bar.
+- **Map** — MapLibre + CARTO Positron basemap; markers show the **value score + a category icon** (not a price) and **re-filter as you change category**; active-pin highlight + synced card carousel.
+- **Experience detail** — **value-first**: a big score seal + the factor breakdown lead, *then* the photos (rating is demoted to a factor, not the headline); a sticky **Book · $X all-in** bar.
+- **Business profiles** — the operator is a real **business**, not a host avatar. Tap it to open its profile — cover photo, an authored bio, and **every deal it runs on Groupee**.
 - **Booking** — atomic date/time slot selection (no "paid but can't book"), color-coded refund policy shown *before* you reserve ("refunded to your card, not credit"), and one-tap support on the confirmation.
 - **AI concierge** — context-aware proactive opener; parses intent + budget ("cheap + nightlife under $50"); replies as cards with reasoning. Backed by the live Claude API when an API key is present, with a deterministic local fallback otherwise.
 - **Groups** — 4-letter invite code, Tinder-style voting (hidden until everyone's done), winner → one-tap committed plan, Splitwise-style split with vote-on-expense.
 - **Trips** — time-ordered upcoming plans, solo and group.
-- **Profile** — taste onboarding (seeds the feed + concierge), wishlists, Groupee+ membership (the non-discount monetization story), and per-category notification controls (the anti-spam answer).
+- **Profile** — taste onboarding (seeds the feed + concierge), wishlists, **Groupee+** ($5/mo — 5% off every deal applied live at checkout, fee-free splits, early access; the non-discount monetization story), and per-category notification controls (the anti-spam answer).
 
 ## Anti-Groupon, by design
 
@@ -76,7 +98,7 @@ The workflow, end to end:
 
 **Value Score — the StubHub move, away from coupons.** Every prospect gets two independent scores: a *merchant fit* score (worth acquiring?) and a *consumer Value Score* (is the deal actually good enough to show users?). A desperate, mediocre spot can pass merchant-fit but **fails the value floor** — so it never reaches the feed. Only deals scoring ≥ 72 are publishable; below that the agent must tune the offer or pass. On the consumer side this surfaces as a **"Great value" badge** on every listing — the feed is curated value, not a coupon dump.
 
-**Closed loop + ops surfaces.** Onboarding a merchant in Partner Studio **publishes it as a live, value-gated deal in the consumer feed** (price from the deal economics, its archetype offer, a "New on Groupee" tag) — the two halves are one system. Plus: a **Fleet** view that scores every prospect in parallel with a bulk "approve all Ship-grade" (the ~10k/wk-vs-100-BDR claim made tangible), an **Impact** dashboard with the board-letter KPIs (value-pass rate, verdict + mechanic mix, projected merchant profit), real **Gmail/Calendar deep-link outreach** from the workspace (prefilled, keyless), and live **Google Places discovery** on the supply graph (mock fallback without a key).
+**Closed loop + ops surfaces.** Onboarding a merchant in Partner Studio **publishes it as a live, value-gated deal in the consumer feed** (price from the deal economics, its archetype offer, a "New partner" tag) — the two halves are one system. Plus: a **Fleet** view that scores every prospect in parallel with a bulk "approve all Ship-grade" (the ~10k/wk-vs-100-BDR claim made tangible), an **Impact** dashboard with the board-letter KPIs (value-pass rate, verdict + mechanic mix, projected merchant profit), real **Gmail/Calendar deep-link outreach** from the workspace (prefilled, keyless), and live **Google Places discovery** on the supply graph (mock fallback without a key).
 
 **Real stack this stands in for:** Google Places/Foursquare + Clay (sourcing/enrichment) → Attio (CRM; note CRM ≠ ERP) → Instantly/Smartlead (email, warmup + SPF/DKIM/DMARC) → ElevenLabs Agents + Twilio (voice, consent-gated). The in-app version simulates sourcing + CRM and uses the real Claude and ElevenLabs APIs.
 
@@ -85,6 +107,7 @@ The workflow, end to end:
 - **Next.js 16** (App Router) + **React 19** + **TypeScript**
 - **Tailwind CSS v4** (CSS-based theming)
 - **MapLibre GL** with CARTO Positron raster tiles (no API key required)
+- **IBM Plex Sans + IBM Plex Mono** — the score-forward identity; mono carries every score, price, and rank numeral
 - Client-side state via React context, persisted to `localStorage`
 - Mobile-first, rendered inside a phone frame on desktop
 
