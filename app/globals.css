@@ -9,17 +9,19 @@
   --color-accent-soft: #eef6e4;
   --color-score-warm: #b87d00; /* mid score / amber */
   --color-score-cool: #6a6f76; /* low score / grey */
-  --color-ink: #1a1a1a;
+  --color-top: #e5147a; /* magenta — #1 rank / top-value seal */
+  --color-ink: #141414;
   --color-ink-2: #4a4a4a;
   --color-muted: #717171;
-  --color-hairline: #ebebeb;
+  --color-hairline: #e7e7e4;
   --color-canvas: #f6f6f4;
   --color-gold: #f0a500;
 
-  --radius-card: 16px;
-  --radius-btn: 12px;
+  --radius-card: 14px;
+  --radius-btn: 11px;
 
-  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-sans-src), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono-src), ui-monospace, "SF Mono", monospace;
 }
 
 html,

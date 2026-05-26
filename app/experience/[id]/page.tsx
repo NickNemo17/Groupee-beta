@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { getExperience, operatorBio } from "@/lib/data";
 import { resolveListing } from "@/lib/deals";
 import { experienceValue } from "@/lib/value";
-import ValueBadge from "@/components/ValueBadge";
+import ScoreSeal from "@/components/ScoreSeal";
 import ValueBreakdown from "@/components/ValueBreakdown";
 import SmartImg from "@/components/SmartImg";
 import HeartButton from "@/components/HeartButton";
@@ -50,7 +50,7 @@ export default function ExperienceDetail() {
         <div className="relative">
           <div className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto">
             {exp.images.map((src, i) => (
-              <div key={i} className="aspect-[4/3] w-full shrink-0 snap-center bg-hairline">
+              <div key={i} className="aspect-[16/10] w-full shrink-0 snap-center bg-hairline">
                 <SmartImg src={src} seed={`${exp.id}-d${i}`} alt={exp.title} className="h-full w-full object-cover" />
               </div>
             ))}
@@ -66,41 +66,28 @@ export default function ExperienceDetail() {
         </div>
 
         <div className="px-4">
-          {/* title block */}
-          <div className="mt-4">
-            <div className="flex items-center gap-2">
-              <ValueBadge tier={val.tier} value={val} />
+          {/* title + score seal (value leads) */}
+          <div className="mt-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
               {exp.localFavorite && (
-                <span className="text-[12px] font-semibold text-accent-dark">★ Local favorite</span>
+                <span className="font-mono text-[11px] font-semibold uppercase tracking-wide text-accent-deep">
+                  ★ Groupee pick
+                </span>
               )}
-            </div>
-            <h1 className="mt-1.5 text-[22px] font-bold leading-tight text-ink">{exp.title}</h1>
-            <p className="mt-1 text-[14px] text-muted">
-              {exp.category} · {exp.neighborhood} · {Math.round(exp.durationMin / 60 * 10) / 10}h
-            </p>
-            {exp.newOnGroupee && (
-              <p className="mt-2 rounded-lg bg-accent-soft px-3 py-2 text-[12px] text-accent-deep">
-                ✦ <span className="font-semibold">Why you&apos;re seeing this:</span> our partnership team
-                sourced {exp.host.name} to fill a quiet window — on fair terms that keep their margins
-                whole, so the experience stays great.
+              <h1 className="mt-0.5 text-[22px] font-bold leading-tight text-ink">{exp.title}</h1>
+              <p className="mt-1 text-[13px] text-muted">
+                {exp.category} · {exp.neighborhood} · {Math.round((exp.durationMin / 60) * 10) / 10}h · ★{exp.rating.toFixed(2)}
               </p>
-            )}
-          </div>
-
-          {/* rating hero */}
-          <div className="mt-4 flex items-center gap-4 rounded-card border border-hairline px-4 py-3">
-            <div className="text-center">
-              <div className="text-[34px] font-extrabold leading-none text-ink">
-                {exp.rating.toFixed(2)}
-              </div>
-              <div className="mt-1 text-[11px] text-accent">★★★★★</div>
             </div>
-            <div className="h-10 w-px bg-hairline" />
-            <div>
-              <p className="text-[14px] font-semibold text-ink">{val.tier} · cleared our value bar</p>
-              <p className="text-[13px] text-muted">{val.blurb}</p>
-            </div>
+            <ScoreSeal value={val} size="lg" showBreakdown className="shrink-0" />
           </div>
+          {exp.newOnGroupee && (
+            <p className="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-[12px] text-accent-deep">
+              ✦ <span className="font-semibold">Why you&apos;re seeing this:</span> our partnership team
+              sourced {exp.host.name} to fill a quiet window — on fair terms that keep their margins
+              whole, so the experience stays great.
+            </p>
+          )}
 
           {/* how the value is determined */}
           <ValueBreakdown value={val} className="mt-4" />
@@ -174,8 +161,8 @@ export default function ExperienceDetail() {
         <RefundBadge tier="green" className="mb-2" />
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <p className="text-[16px] font-bold text-ink">
-              ${exp.price} <span className="text-[13px] font-normal text-muted">all-in · person</span>
+            <p className="font-mono text-[16px] font-bold tabular-nums text-ink">
+              ${exp.price} <span className="text-[12px] font-medium text-muted">all-in · person</span>
             </p>
           </div>
           <button
@@ -188,7 +175,7 @@ export default function ExperienceDetail() {
             onClick={() => setSheet("book")}
             className="rounded-btn bg-accent px-5 py-3 text-[15px] font-semibold text-white"
           >
-            Reserve · ${exp.price}
+            Book · ${exp.price}
           </button>
         </div>
       </div>

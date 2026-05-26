@@ -10,6 +10,7 @@ import { useGroupee } from "@/lib/store";
 import { useMerchant } from "@/lib/merchantStore";
 import ExperienceCard from "@/components/ExperienceCard";
 import Wordmark from "@/components/Wordmark";
+import EmptyState from "@/components/EmptyState";
 
 const MapView = dynamic(() => import("@/components/MapView"), {
   ssr: false,
@@ -69,8 +70,8 @@ export default function ExplorePage() {
             📍 Santa Barbara
           </div>
         </div>
-        <p className="animate-pop-in mt-2 text-[18px] font-bold leading-tight tracking-tight text-ink">
-          Local experiences worth your time.
+        <p className="animate-pop-in mt-2 text-[19px] font-bold leading-tight tracking-tight text-ink">
+          Tonight, ranked by value.
         </p>
 
         {/* search pill (Where / When / What) */}
@@ -111,19 +112,22 @@ export default function ExplorePage() {
         </div>
       ) : (
         <div className="flex-1 px-4 pb-24 pt-3">
-          <p className="mb-3 text-[13px] text-muted">
-            {items.length} {items.length === 1 ? "experience" : "experiences"} ·{" "}
-            <span className="text-accent-dark">best value first · every listing clears the bar</span>
+          <p className="mb-3 font-mono text-[11px] font-semibold uppercase tracking-wide text-muted">
+            Ranked best-value first · {items.length} clear the bar
           </p>
-          <div className="flex flex-col gap-6">
-            {items.map((e) => (
-              <ExperienceCard key={e.id} exp={e} />
+          <div className="flex flex-col gap-2.5">
+            {items.map((e, i) => (
+              <div key={e.id} className="flex items-center gap-2">
+                <span className="w-5 shrink-0 text-center font-mono text-[15px] font-bold tabular-nums text-muted">
+                  {i + 1}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <ExperienceCard exp={e} rank={i + 1} />
+                </div>
+              </div>
             ))}
             {items.length === 0 && (
-              <div className="mt-16 text-center text-muted">
-                <p className="text-4xl">🔍</p>
-                <p className="mt-2 text-sm">No matches. Try a different vibe.</p>
-              </div>
+              <EmptyState icon="🔍" title="No matches" subtitle="Try a different vibe or category." />
             )}
           </div>
         </div>
@@ -169,11 +173,11 @@ function Pill({
   return (
     <button
       onClick={onClick}
-      className={`flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-2 text-[13px] font-medium transition ${
-        active ? "border-ink bg-ink text-white" : "border-hairline bg-white text-ink-2"
+      className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-3 py-1.5 text-[12px] font-semibold transition ${
+        active ? "border-accent bg-accent text-white" : "border-hairline bg-white text-ink-2"
       }`}
     >
-      <span>{icon}</span>
+      <span className="text-[11px]">{icon}</span>
       {label}
     </button>
   );

@@ -1,88 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { type Experience } from "@/lib/data";
 import { experienceValue } from "@/lib/value";
 import SmartImg from "./SmartImg";
 import HeartButton from "./HeartButton";
-import ValueBadge from "./ValueBadge";
+import ScoreSeal from "./ScoreSeal";
 
+// Score-forward leaderboard row: the value seal leads, photo is a thumbnail.
 export default function ExperienceCard({
   exp,
-  reason,
+  rank,
 }: {
   exp: Experience;
-  reason?: string;
+  rank?: number;
 }) {
-  const [idx, setIdx] = useState(0);
-  const imgs = exp.images;
   const val = experienceValue(exp);
+  const barColor =
+    val.tier === "Great value"
+      ? "var(--color-accent)"
+      : val.tier === "Good value"
+        ? "var(--color-accent-dark)"
+        : "var(--color-score-cool)";
 
   return (
-    <Link href={`/experience/${exp.id}`} className="group relative block">
-      <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-hairline">
-        <SmartImg
-          src={imgs[idx]}
-          seed={`${exp.id}-${idx}`}
-          alt={exp.title}
-          className="h-full w-full object-cover transition group-active:scale-[1.02]"
-        />
+    <Link
+      href={`/experience/${exp.id}`}
+      className="group flex items-stretch gap-3 rounded-card border border-hairline bg-white p-2.5 transition-all duration-200 hover:border-accent/40 hover:shadow-card"
+    >
+      <ScoreSeal value={val} size="md" top={rank === 1} showBreakdown className="self-center" />
 
-        {exp.newOnGroupee && (
-          <span className="absolute left-3 top-11 rounded-full bg-white/95 px-2 py-0.5 text-[10px] font-bold text-accent-deep shadow-card">
-            ✦ New partner
-          </span>
-        )}
-
-        <HeartButton id={exp.id} className="absolute right-2.5 top-2.5 h-9 w-9" />
-
-        {/* carousel dots */}
-        {imgs.length > 1 && (
-          <div className="absolute inset-x-0 bottom-2.5 flex items-center justify-center gap-1.5">
-            {imgs.map((_, i) => (
-              <button
-                key={i}
-                aria-label={`Photo ${i + 1}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIdx(i);
-                }}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === idx ? "w-1.5 bg-white" : "w-1.5 bg-white/60"
-                }`}
-              />
-            ))}
-          </div>
-        )}
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-2">
+          <h3 className="text-[15px] font-bold leading-snug text-ink line-clamp-1">{exp.title}</h3>
+          <HeartButton id={exp.id} className="-mr-1 -mt-1 h-8 w-8 shrink-0" />
+        </div>
+        <p className="mt-0.5 text-[12px] text-muted line-clamp-1">
+          {exp.category} · {exp.neighborhood}
+          {exp.localFavorite ? " · Groupee pick" : ""}
+          {exp.newOnGroupee ? " · ✦ New partner" : ""}
+        </p>
+        {/* value bar */}
+        <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-canvas">
+          <div className="h-full rounded-full" style={{ width: `${val.score}%`, background: barColor }} />
+        </div>
+        <p className="mt-1.5 font-mono text-[14px] font-bold tabular-nums text-ink">
+          ${exp.price}
+          <span className="text-[11px] font-medium text-muted"> all-in · ★{exp.rating.toFixed(2)}</span>
+        </p>
       </div>
 
-      {/* value badge lives outside the clipped image so its hover breakdown shows */}
-      <ValueBadge tier={val.tier} value={val} className="absolute left-3 top-3 z-20" />
-
-      <div className="mt-2.5">
-        {reason && (
-          <div className="mb-1 flex items-center gap-1 text-[12px] font-medium text-accent-dark">
-            <span>✨</span>
-            <span>{reason}</span>
-          </div>
-        )}
-        <div className="flex items-start justify-between gap-2">
-          <h3 className="text-[15px] font-semibold leading-snug text-ink line-clamp-1">
-            {exp.title}
-          </h3>
-          <span className="flex shrink-0 items-center gap-1 text-[13px] font-medium text-ink">
-            <span className="text-ink">★</span>
-            {exp.rating.toFixed(2)}
-          </span>
-        </div>
-        <p className="mt-0.5 text-[13px] text-muted line-clamp-1">
-          {exp.neighborhood} · {exp.distanceMi} mi away{exp.localFavorite ? " · Local favorite" : ""}
-        </p>
-        <p className="mt-1 text-[14px] text-ink">
-          <span className="font-semibold">${exp.price}</span>
-          <span className="text-muted"> all-in · person</span>
-        </p>
+      <div className="h-[68px] w-[68px] shrink-0 self-center overflow-hidden rounded-xl bg-hairline">
+        <SmartImg src={exp.images[0]} seed={`${exp.id}-thumb`} alt={exp.title} className="h-full w-full object-cover" />
       </div>
     </Link>
   );

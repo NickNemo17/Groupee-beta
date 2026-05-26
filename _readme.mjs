@@ -1,0 +1,11 @@
+import { chromium } from "playwright";
+const OUT="docs/screenshots"; const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const b = await chromium.launch();
+const c = await b.newContext({ viewport:{width:390,height:780}, deviceScaleFactor:2 });
+await c.addInitScript(()=>localStorage.setItem("groupee-state-v1", JSON.stringify({taste:{categories:[],vibes:[],done:true},wishlist:[],trips:[],groups:[],member:false})));
+const p = await c.newPage();
+await p.goto("http://localhost:3000/",{waitUntil:"domcontentloaded"}); await sleep(1300);
+await p.screenshot({path:`${OUT}/explore.png`});
+await p.goto("http://localhost:3000/experience/tide-to-table",{waitUntil:"domcontentloaded"}); await sleep(1400);
+await p.screenshot({path:`${OUT}/detail.png`});
+console.log("done"); await b.close();

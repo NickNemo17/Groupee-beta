@@ -24,11 +24,15 @@ export default function TabBar() {
             <li key={t.href} className="flex-1">
               <Link
                 href={t.href}
-                className="flex flex-col items-center gap-1 py-2.5"
+                className={`mx-1 flex flex-col items-center gap-1 rounded-xl py-2 transition ${
+                  active ? "bg-accent-soft" : ""
+                }`}
               >
                 <Icon active={active} />
                 <span
-                  className={`text-[10px] font-medium ${active ? "text-accent" : "text-muted"}`}
+                  className={`font-mono text-[9px] font-semibold uppercase tracking-wide ${
+                    active ? "text-accent-deep" : "text-muted"
+                  }`}
                 >
                   {t.label}
                 </span>

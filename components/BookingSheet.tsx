@@ -38,7 +38,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
             weekday: "short",
             month: "short",
             day: "numeric",
-          })} at {time} · {party} {party === 1 ? "guest" : "guests"}
+          })} at {time} · {party} {party === 1 ? "person" : "people"}
         </p>
 
         {/* support one tap away — answers the "buried support" complaint */}
@@ -101,7 +101,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
 
       {/* party */}
       <div className="mt-4 flex items-center justify-between">
-        <p className="text-[13px] font-semibold text-ink">Guests</p>
+        <p className="text-[13px] font-semibold text-ink">People</p>
         <div className="flex items-center gap-4">
           <button
             onClick={() => setParty((p) => Math.max(1, p - 1))}
@@ -137,7 +137,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
 
       {/* breakdown — all-in, no junk fees */}
       <div className="mt-4 space-y-1.5 border-t border-hairline pt-3 text-[14px]">
-        <Row l={`$${exp.price} × ${party} ${party === 1 ? "guest" : "guests"}`} r={`$${total}`} />
+        <Row l={`$${exp.price} × ${party} ${party === 1 ? "person" : "people"}`} r={`$${total}`} />
         <Row l="Booking fee" r="$0" muted />
         <Row l="Total (all-in)" r={`$${total}`} bold />
       </div>
@@ -151,7 +151,7 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
         }}
         className="mt-4 w-full rounded-btn bg-accent py-3.5 text-[15px] font-semibold text-white active:scale-[0.99]"
       >
-        Reserve · ${total}
+        Book · ${total}
       </button>
       <p className="mt-2 text-center text-[12px] text-muted">
         You won&apos;t be charged until the host confirms.
