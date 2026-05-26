@@ -41,8 +41,9 @@ export default function ValueBreakdown({
 
       {!compact && (
         <p className="mt-3 text-[11px] text-muted">
-          Value is scored on quality, local demand, a fair price <em>for its category</em>, and honest
-          all-in pricing — never on discount depth. A premium experience can still be great value.
+          Scored on quality, local demand, and price <em>vs. what you actually get</em> — never on
+          discount depth. Premium can still be great value; cheap-but-thin isn&apos;t. Every price is
+          honest and all-in — no fees, no fake anchors.
         </p>
       )}
     </div>
