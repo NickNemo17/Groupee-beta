@@ -83,11 +83,12 @@ export default function ProfilePage() {
         {/* membership — the non-discount monetization story */}
         {!member ? (
           <div className="mt-4 overflow-hidden rounded-card bg-gradient-to-br from-ink to-[#333] p-4 text-white">
-            <p className="text-[15px] font-bold">Groupee+</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-white/70">For the ultimate value-seekers</p>
+            <p className="text-[16px] font-bold">Groupee+ · $5/mo</p>
             <p className="mt-1 text-[13px] opacity-90">
-              Early access to new experiences · fee-free splits · premium group tools · members-only events.
+              <span className="font-semibold text-white">5% off every deal</span> · early access to new experiences · fee-free cost-splitting · members-only drops.
             </p>
-            <p className="mt-2 text-[12px] opacity-75">No discount death-spiral — just real perks, $9/mo.</p>
+            <p className="mt-2 text-[12px] opacity-75">Pays for itself in two outings — the more you go, the more you save.</p>
             <button
               onClick={joinMembership}
               className="mt-3 rounded-btn bg-accent px-4 py-2 text-[14px] font-semibold text-white"
@@ -97,8 +98,8 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className="mt-4 rounded-card bg-accent-soft p-4">
-            <p className="text-[14px] font-semibold text-accent-dark">✓ Groupee+ active</p>
-            <p className="text-[12px] text-ink-2">Splits are fee-free and you&apos;ve got early access to new drops.</p>
+            <p className="text-[14px] font-semibold text-accent-deep">✓ Groupee+ active</p>
+            <p className="text-[12px] text-ink-2">5% off every deal, fee-free splits, and early access to new drops.</p>
           </div>
         )}
 

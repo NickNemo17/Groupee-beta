@@ -14,7 +14,7 @@ const PAY = [
 ];
 
 export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone: () => void }) {
-  const { bookSolo } = useGroupee();
+  const { bookSolo, member } = useGroupee();
   const days = nextDays(5);
   const slots = slotsFor(exp.bestTime);
 
@@ -24,7 +24,9 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
   const [pay, setPay] = useState("apple");
   const [confirmed, setConfirmed] = useState(false);
 
-  const total = exp.price * party;
+  const subtotal = exp.price * party;
+  const memberOff = member ? Math.round(subtotal * 0.05 * 100) / 100 : 0;
+  const total = Math.round((subtotal - memberOff) * 100) / 100;
 
   if (confirmed) {
     return (
@@ -137,8 +139,9 @@ export default function BookingSheet({ exp, onDone }: { exp: Experience; onDone:
 
       {/* breakdown — all-in, no junk fees */}
       <div className="mt-4 space-y-1.5 border-t border-hairline pt-3 text-[14px]">
-        <Row l={`$${exp.price} × ${party} ${party === 1 ? "person" : "people"}`} r={`$${total}`} />
+        <Row l={`$${exp.price} × ${party} ${party === 1 ? "person" : "people"}`} r={`$${subtotal}`} />
         <Row l="Booking fee" r="$0" muted />
+        {member && <Row l="Groupee+ member · −5%" r={`−$${memberOff}`} />}
         <Row l="Total (all-in)" r={`$${total}`} bold />
       </div>
 

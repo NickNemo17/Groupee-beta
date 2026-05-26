@@ -100,8 +100,8 @@ export default function ExperienceDetail() {
             href={`/business/${biz.slug}`}
             className="mt-4 flex items-center gap-3 rounded-card border border-hairline p-3 transition hover:border-accent/40"
           >
-            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent text-[20px] font-extrabold text-white">
-              {biz.name[0]}
+            <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl bg-hairline">
+              <SmartImg src={biz.image} seed={`${biz.slug}-op`} alt={biz.name} className="h-full w-full object-cover" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-ink">
