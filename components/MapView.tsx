@@ -3,8 +3,13 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { useRouter } from "next/navigation";
-import { type Experience } from "@/lib/data";
+import { CATEGORIES, type Experience } from "@/lib/data";
+import { experienceValue } from "@/lib/value";
 import SmartImg from "./SmartImg";
+
+const CAT_ICON: Record<string, string> = Object.fromEntries(
+  CATEGORIES.map((c) => [c.key, c.icon])
+);
 
 // modern map: clean light CARTO Positron basemap (WebGL via MapLibre),
 // price-pill markers, and a card carousel synced to the active pin.
@@ -27,12 +32,13 @@ const STYLE: maplibregl.StyleSpecification = {
 
 function pinStyle(el: HTMLElement, active: boolean) {
   el.style.cssText = `
-    cursor:pointer; white-space:nowrap; font-family:inherit;
+    cursor:pointer; white-space:nowrap;
+    display:inline-flex; align-items:center; gap:4px;
     font-weight:700; font-size:13px; line-height:1;
-    padding:7px 10px; border-radius:999px;
-    border:1px solid ${active ? "#1a1a1a" : "#e0e0e0"};
-    background:${active ? "#1a1a1a" : "#fff"};
-    color:${active ? "#fff" : "#1a1a1a"};
+    padding:6px 9px; border-radius:999px;
+    border:1px solid ${active ? "#141414" : "#e0e0e0"};
+    background:${active ? "#141414" : "#fff"};
+    color:${active ? "#fff" : "#141414"};
     box-shadow:0 2px 8px rgba(0,0,0,.22);
     transform:scale(${active ? 1.12 : 1}); transition:transform .15s, background .15s;
     z-index:${active ? 5 : 1};
@@ -45,6 +51,7 @@ export default function MapView({ items }: { items: Experience[] }) {
   const markersRef = useRef<Record<string, { marker: maplibregl.Marker; el: HTMLElement }>>({});
   const railRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const [loaded, setLoaded] = useState(false);
   const [activeId, setActiveId] = useState(items[0]?.id ?? "");
   const activeRef = useRef(activeId);
   activeRef.current = activeId;
@@ -70,28 +77,9 @@ export default function MapView({ items }: { items: Experience[] }) {
       attributionControl: { compact: true },
     });
     mapRef.current = map;
-
     map.on("load", () => {
       map.resize();
-      // frame all listings
-      if (items.length) {
-        const bounds = items.reduce(
-          (b, e) => b.extend([e.lng, e.lat] as [number, number]),
-          new maplibregl.LngLatBounds([items[0].lng, items[0].lat], [items[0].lng, items[0].lat])
-        );
-        map.fitBounds(bounds, { padding: { top: 70, bottom: 150, left: 50, right: 50 }, duration: 0 });
-      }
-      items.forEach((e) => {
-        const el = document.createElement("button");
-        el.textContent = `$${e.price}`;
-        pinStyle(el, e.id === activeRef.current);
-        el.addEventListener("click", (ev) => {
-          ev.stopPropagation();
-          select(e.id);
-        });
-        const marker = new maplibregl.Marker({ element: el }).setLngLat([e.lng, e.lat]).addTo(map);
-        markersRef.current[e.id] = { marker, el };
-      });
+      setLoaded(true);
     });
 
     const ro = new ResizeObserver(() => map.resize());
@@ -105,6 +93,42 @@ export default function MapView({ items }: { items: Experience[] }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Rebuild markers whenever the filtered items change (so the map re-filters
+  // with the category) — each pin shows the value score + a category icon.
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !loaded) return;
+
+    Object.values(markersRef.current).forEach(({ marker }) => marker.remove());
+    markersRef.current = {};
+
+    if (!items.some((e) => e.id === activeRef.current)) {
+      setActiveId(items[0]?.id ?? "");
+    }
+
+    items.forEach((e) => {
+      const score = experienceValue(e).score;
+      const el = document.createElement("button");
+      el.innerHTML = `<span style="font-size:12px">${CAT_ICON[e.category] ?? "📍"}</span><span style="font-family:var(--font-mono)">${score}</span>`;
+      pinStyle(el, e.id === activeRef.current);
+      el.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        select(e.id);
+      });
+      const marker = new maplibregl.Marker({ element: el }).setLngLat([e.lng, e.lat]).addTo(map);
+      markersRef.current[e.id] = { marker, el };
+    });
+
+    if (items.length) {
+      const bounds = items.reduce(
+        (b, e) => b.extend([e.lng, e.lat] as [number, number]),
+        new maplibregl.LngLatBounds([items[0].lng, items[0].lat], [items[0].lng, items[0].lat])
+      );
+      map.fitBounds(bounds, { padding: { top: 70, bottom: 150, left: 50, right: 50 }, duration: 300 });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [items, loaded]);
 
   return (
     <div className="absolute inset-0">

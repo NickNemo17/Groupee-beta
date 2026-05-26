@@ -3,8 +3,10 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { getExperience, operatorBio } from "@/lib/data";
+import Link from "next/link";
+import { getExperience } from "@/lib/data";
 import { resolveListing } from "@/lib/deals";
+import { businessFor } from "@/lib/business";
 import { experienceValue } from "@/lib/value";
 import ScoreSeal from "@/components/ScoreSeal";
 import ValueBreakdown from "@/components/ValueBreakdown";
@@ -42,6 +44,7 @@ export default function ExperienceDetail() {
   }
 
   const val = experienceValue(exp);
+  const biz = businessFor(exp);
 
   return (
     <div className="relative flex h-full flex-col">
@@ -84,7 +87,7 @@ export default function ExperienceDetail() {
           {exp.newOnGroupee && (
             <p className="mt-3 rounded-lg bg-accent-soft px-3 py-2 text-[12px] text-accent-deep">
               ✦ <span className="font-semibold">Why you&apos;re seeing this:</span> our partnership team
-              sourced {exp.host.name} to fill a quiet window — on fair terms that keep their margins
+              sourced {biz.name} to fill a quiet window — on fair terms that keep their margins
               whole, so the experience stays great.
             </p>
           )}
@@ -92,22 +95,27 @@ export default function ExperienceDetail() {
           {/* how the value is determined */}
           <ValueBreakdown value={val} className="mt-4" />
 
-          {/* operator */}
-          <div className="mt-4 flex items-start gap-3 border-b border-hairline pb-4">
-            <img src={exp.host.avatar} alt={exp.host.name} className="h-12 w-12 shrink-0 rounded-full object-cover" />
-            <div className="flex-1">
+          {/* the business — tap through to its profile + all its deals */}
+          <Link
+            href={`/business/${biz.slug}`}
+            className="mt-4 flex items-center gap-3 rounded-card border border-hairline p-3 transition hover:border-accent/40"
+          >
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-accent text-[20px] font-extrabold text-white">
+              {biz.name[0]}
+            </div>
+            <div className="min-w-0 flex-1">
               <p className="text-[15px] font-semibold text-ink">
-                Run by {exp.host.name}
-                {exp.host.superhost && (
+                {biz.name}
+                {biz.topRated && (
                   <span className="ml-2 rounded-full bg-accent-soft px-2 py-0.5 text-[11px] font-semibold text-accent-deep">
-                    ✓ Top-rated operator
+                    ✓ Top-rated
                   </span>
                 )}
               </p>
-              <p className="mt-0.5 text-[13px] leading-snug text-ink-2">{operatorBio(exp)}</p>
-              <p className="mt-1 text-[12px] text-muted">Operating since {exp.host.since} · vetted by Groupee</p>
+              <p className="mt-0.5 text-[12px] leading-snug text-muted line-clamp-2">{biz.bio}</p>
             </div>
-          </div>
+            <span className="self-center text-muted">›</span>
+          </Link>
 
           {/* description */}
           <p className="mt-4 text-[14px] leading-relaxed text-ink-2">{exp.description}</p>
@@ -149,7 +157,7 @@ export default function ExperienceDetail() {
           <div className="mt-5 rounded-card bg-accent-soft px-4 py-3">
             <p className="text-[13px] font-semibold text-accent-dark">Come back & save</p>
             <p className="text-[12px] text-ink-2">
-              Book again within 30 days and {exp.host.name} comps your first drink — Groupee rewards
+              Book again within 30 days and {biz.name} comps your first drink — Groupee rewards
               loyalty, not one-time bargain-hunting.
             </p>
           </div>
